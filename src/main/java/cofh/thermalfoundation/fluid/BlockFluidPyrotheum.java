@@ -1,12 +1,5 @@
 package cofh.thermalfoundation.fluid;
 
-import cofh.core.fluid.BlockFluidInteractive;
-import cofh.lib.util.BlockWrapper;
-import cofh.lib.util.helpers.BlockHelper;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -19,21 +12,26 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.core.fluid.BlockFluidInteractive;
+import cofh.lib.util.BlockWrapper;
+import cofh.lib.util.helpers.BlockHelper;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class BlockFluidPyrotheum extends BlockFluidInteractive {
 
 	Random random = new Random();
 
 	public static final int LEVELS = 5;
-	public static final Material materialFluidPyrotheum = new MaterialLiquid(MapColor.tntColor);
+	public static final Material materialFluidPyrotheum = new MaterialLiquid(MapColor.TNT);
 
 	private static boolean effect = true;
 	private static boolean enableSourceFall = true;
 
 	public BlockFluidPyrotheum() {
 
-		super("thermalfoundation", TFFluids.fluidPyrotheum, Material.lava, "pyrotheum");
+		super("thermalfoundation", TFFluids.fluidPyrotheum, Material.LAVA, "pyrotheum");
 		setQuantaPerBlock(LEVELS);
 		setTickRate(10);
 

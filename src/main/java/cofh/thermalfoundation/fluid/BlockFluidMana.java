@@ -1,14 +1,5 @@
 package cofh.thermalfoundation.fluid;
 
-import cofh.core.fluid.BlockFluidInteractive;
-import cofh.core.util.CoreUtils;
-import cofh.lib.util.BlockWrapper;
-import cofh.lib.util.helpers.BlockHelper;
-import cofh.lib.util.helpers.MathHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.block.TFBlocks;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -20,12 +11,19 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.core.fluid.BlockFluidInteractive;
+import cofh.core.util.CoreUtils;
+import cofh.lib.util.BlockWrapper;
+import cofh.lib.util.helpers.BlockHelper;
+import cofh.lib.util.helpers.MathHelper;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.block.TFBlocks;
 
 public class BlockFluidMana extends BlockFluidInteractive {
 
 	public static final int LEVELS = 6;
-	public static final Material materialFluidMana = new MaterialLiquid(MapColor.purpleColor);
+	public static final Material materialFluidMana = new MaterialLiquid(MapColor.PURPLE);
 
 	private static boolean effect = true;
 

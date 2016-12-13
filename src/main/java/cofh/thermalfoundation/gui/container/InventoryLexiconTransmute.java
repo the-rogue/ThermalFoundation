@@ -3,6 +3,7 @@ package cofh.thermalfoundation.gui.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public class InventoryLexiconTransmute implements IInventory {
 
@@ -54,7 +55,7 @@ public class InventoryLexiconTransmute implements IInventory {
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) {
+	public ItemStack removeStackFromSlot(int slot) {
 
 		if (slot == 0 && this.stackList[slot] != null) {
 			ItemStack stack = this.stackList[slot];
@@ -75,13 +76,13 @@ public class InventoryLexiconTransmute implements IInventory {
 	}
 
 	@Override
-	public String getInventoryName() {
+	public String getName() {
 
 		return null;
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomName() {
 
 		return true;
 	}
@@ -105,12 +106,12 @@ public class InventoryLexiconTransmute implements IInventory {
 	}
 
 	@Override
-	public void openInventory() {
+	public void openInventory(EntityPlayer player) {
 
 	}
 
 	@Override
-	public void closeInventory() {
+	public void closeInventory(EntityPlayer player) {
 
 	}
 
@@ -118,6 +119,38 @@ public class InventoryLexiconTransmute implements IInventory {
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 
 		return true;
+	}
+
+	@Override
+	public ITextComponent getDisplayName()
+	{
+		return null;
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		for (int i = 0; i < this.stackList.length; ++i)
+		{
+			this.stackList[i] = null;
+		}
 	}
 
 }

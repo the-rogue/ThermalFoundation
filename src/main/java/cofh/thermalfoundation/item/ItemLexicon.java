@@ -1,8 +1,28 @@
 package cofh.thermalfoundation.item;
 
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
 import cofh.api.item.IEmpowerableItem;
 import cofh.api.item.IInventoryContainerItem;
 import cofh.core.util.CoreUtils;
@@ -13,23 +33,6 @@ import cofh.lib.util.helpers.StringHelper;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.gui.GuiHandler;
 import cofh.thermalfoundation.util.LexiconManager;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import java.util.List;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
 public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpowerableItem, IBauble {
 
@@ -40,13 +43,14 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 
 		super();
 		this.itemName = name;
+		setUnlocalizedName(name);
 		setMaxDamage(1);
 		setMaxStackSize(1);
 		setCreativeTab(ThermalFoundation.tabCommon);
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List list) {
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 
 		ItemStack lexicon = new ItemStack(item, 1, 0);
 		setEmpoweredState(lexicon, false);
@@ -54,7 +58,7 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean check) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean check) {
 
 		if (StringHelper.displayShiftForDetail && !StringHelper.isShiftKeyDown()) {
 			list.add(StringHelper.shiftForDetails());
@@ -81,9 +85,9 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	public EnumRarity getRarity(ItemStack stack) {
 
 		if (isEmpowered(stack)) {
-			return EnumRarity.rare;
+			return EnumRarity.RARE;
 		}
-		return EnumRarity.uncommon;
+		return EnumRarity.UNCOMMON;
 	}
 
 	@Override
@@ -93,19 +97,20 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-
-		if (CoreUtils.isFakePlayer(player)) {
-			return stack;
-		}
-		if (ServerHelper.isServerWorld(world) && LexiconManager.getSortedOreNames().size() > 0) {
-			if (isEmpowered(stack)) {
-				player.openGui(ThermalFoundation.instance, GuiHandler.LEXICON_TRANSMUTE_ID, world, 0, 0, 0);
-			} else {
-				player.openGui(ThermalFoundation.instance, GuiHandler.LEXICON_STUDY_ID, world, 0, 0, 0);
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+		if (hand.equals(EnumHand.MAIN_HAND)) {
+			if (CoreUtils.isFakePlayer(player)) {
+				return new ActionResult<ItemStack>(EnumActionResult.PASS ,stack);
+			}
+			if (ServerHelper.isServerWorld(world) && LexiconManager.getSortedOreNames().size() > 0) {
+				if (isEmpowered(stack)) {
+					player.openGui(ThermalFoundation.instance, GuiHandler.LEXICON_TRANSMUTE_ID, world, 0, 0, 0);
+				} else {
+					player.openGui(ThermalFoundation.instance, GuiHandler.LEXICON_STUDY_ID, world, 0, 0, 0);
+				}
 			}
 		}
-		return stack;
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS ,stack);
 	}
 
 	@Override
@@ -137,7 +142,7 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	public Entity createEntity(World world, Entity location, ItemStack stack) {
 
 		if (SecurityHelper.isSecure(stack)) {
-			location.invulnerable = true;
+			location.setEntityInvulnerable(true);
 			location.isImmuneToFire = true;
 			((EntityItem) location).lifespan = Integer.MAX_VALUE;
 		}
@@ -146,24 +151,10 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 
 	@Override
 	public Item setUnlocalizedName(String name) {
-
-		GameRegistry.registerItem(this, name);
 		name = modName + "." + name;
-		return super.setUnlocalizedName(name);
-	}
-
-	public Item setUnlocalizedName(String textureName, String registrationName) {
-
-		GameRegistry.registerItem(this, registrationName);
-		textureName = modName + "." + textureName;
-		return super.setUnlocalizedName(textureName);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister ir) {
-
-		this.itemIcon = ir.registerIcon(modName + ":" + getUnlocalizedName().replace("item." + modName + ".", "") + "/" + StringHelper.titleCase(itemName));
+		super.setUnlocalizedName(name);
+		GameRegistry.register(this);
+		return this;
 	}
 
 	/* IInventoryContainerItem */
@@ -177,16 +168,16 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	@Override
 	public boolean isEmpowered(ItemStack stack) {
 
-		return stack.stackTagCompound == null ? false : stack.stackTagCompound.getBoolean("Empowered");
+		return stack.getTagCompound() == null ? false : stack.getTagCompound().getBoolean("Empowered");
 	}
 
 	@Override
 	public boolean setEmpoweredState(ItemStack stack, boolean state) {
 
-		if (stack.stackTagCompound == null) {
+		if (stack.getTagCompound() == null) {
 			stack.setTagCompound(new NBTTagCompound());
 		}
-		stack.stackTagCompound.setBoolean("Empowered", state);
+		stack.getTagCompound().setBoolean("Empowered", state);
 		return true;
 	}
 
@@ -194,9 +185,9 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	public void onStateChange(EntityPlayer player, ItemStack stack) {
 
 		if (isEmpowered(stack)) {
-			player.worldObj.playSoundAtEntity(player, "ambient.weather.thunder", 0.4F, 1.0F);
+			player.worldObj.playSound(player, player.getPosition(), SoundEvent.REGISTRY.getObject(new ResourceLocation("weather.rain.above")), SoundCategory.PLAYERS, 0.4F, 1.0F);
 		} else {
-			player.worldObj.playSoundAtEntity(player, "random.orb", 0.2F, 0.6F);
+			player.worldObj.playSound(player, player.getPosition(), SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.player.levelup")), SoundCategory.PLAYERS, 0.2F, 0.6F);
 		}
 	}
 
@@ -237,6 +228,9 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
 
 		return true;
+	}
+	public void registertexture() {
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(this, 0, new ModelResourceLocation(this.getUnlocalizedName().substring(5), "inventory"));
 	}
 
 }

@@ -1,26 +1,27 @@
 package cofh.thermalfoundation.fluid;
 
-import cofh.core.fluid.BlockFluidCoFHBase;
-import cofh.thermalfoundation.ThermalFoundation;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.core.fluid.BlockFluidCoFHBase;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class BlockFluidCoal extends BlockFluidCoFHBase {
 
 	public static final int LEVELS = 6;
-	public static final Material materialFluidCoal = new MaterialLiquid(MapColor.grayColor);
+	public static final Material materialFluidCoal = new MaterialLiquid(MapColor.GRAY);
 
 	private static boolean effect = true;
 
 	public BlockFluidCoal() {
 
-		super("thermalfoundation", TFFluids.fluidCoal, Material.water, "coal");
+		super("thermalfoundation", TFFluids.fluidCoal, Material.WATER, "coal");
 		setQuantaPerBlock(LEVELS);
 		setTickRate(10);
 
@@ -32,7 +33,7 @@ public class BlockFluidCoal extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, "FluidCoal");
+		GameRegistry.register(this, new ResourceLocation("FluidCoal"));
 
 		String category = "Fluid.Coal";
 		String comment = "Enable this for Fluid Coal to be flammable.";
@@ -42,25 +43,25 @@ public class BlockFluidCoal extends BlockFluidCoFHBase {
 	}
 
 	@Override
-	public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
 
 		return effect ? 300 : 0;
 	}
 
 	@Override
-	public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
 
 		return 25;
 	}
 
 	@Override
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face) {
 
 		return effect;
 	}
 
 	@Override
-	public boolean isFireSource(World world, int x, int y, int z, ForgeDirection side) {
+	public boolean isFireSource(World world, BlockPos pos, EnumFacing side) {
 
 		return effect;
 	}

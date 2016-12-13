@@ -1,127 +1,159 @@
 package cofh.thermalfoundation.block;
 
-import cofh.api.core.IInitializer;
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.StringHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.api.core.IInitializer;
+import cofh.lib.util.helpers.ItemHelper;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class BlockStorage extends Block implements IInitializer {
+	public static final PropertyEnum<EnumType> VARIANT = PropertyEnum.<EnumType>create("variant", EnumType.class);
 
 	public BlockStorage() {
 
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(5.0F);
 		setResistance(10.0F);
-		setStepSound(soundTypeMetal);
+		setSoundType(SoundType.METAL);
 		setCreativeTab(ThermalFoundation.tabCommon);
-		setBlockName("thermalfoundation.storage");
+		setUnlocalizedName("thermalfoundation:block");
+		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.Copper));
 
 		setHarvestLevel("pickaxe", 2);
-		setHarvestLevel("pickaxe", 1, 0);
-		setHarvestLevel("pickaxe", 1, 1);
-		setHarvestLevel("pickaxe", 3, 6);
-		setHarvestLevel("pickaxe", 3, 12);
+		setHarvestLevel("pickaxe", 1, getStateFromType(EnumType.Copper));
+		setHarvestLevel("pickaxe", 1, getStateFromType(EnumType.Tin));
+		setHarvestLevel("pickaxe", 3, getStateFromType(EnumType.Mithril));
+		setHarvestLevel("pickaxe", 3, getStateFromType(EnumType.Enderium));
 	}
 
 	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, new IProperty[] {VARIANT});
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+	    return getDefaultState().withProperty(VARIANT, EnumType.getTypeFromMeta(meta));
+	}
+	
+	public IBlockState getStateFromType(EnumType type) {
+	    return getDefaultState().withProperty(VARIANT, type);
+	}
 
-		for (int i = 0; i < NAMES.length; i++) {
+	@Override
+	public int getMetaFromState(IBlockState state) {
+	    return state.getValue(VARIANT).getMeta();
+	}
+	
+	@Override
+	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+
+		for (int i = 0; i < EnumType.values().length; i++) {
 			list.add(new ItemStack(item, 1, i));
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+	public int getLightValue(IBlockState state) {
 
-		return LIGHT[world.getBlockMetadata(x, y, z)];
+		return state.getValue(VARIANT).getLightvalue();
 	}
 
 	@Override
-	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
-
-		return world.getBlockMetadata(x, y, z) == 10 ? 15 : 0;
+	public int getWeakPower(IBlockState blockState, IBlockAccess world, BlockPos pos, EnumFacing side) 
+	{
+		return blockState.getValue(VARIANT) == EnumType.Signalum ? 15 : 0;
 	}
 
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z) {
+	public float getBlockHardness(IBlockState state, World worldIn, BlockPos pos) {
 
-		return HARDNESS[world.getBlockMetadata(x, y, z)];
+		return state.getValue(VARIANT).getHardness();
 	}
 
 	@Override
-	public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ) {
-
-		return RESISTANCE[world.getBlockMetadata(x, y, z)];
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
+	{
+		return world.getBlockState(pos).getValue(VARIANT).getResistance();
 	}
 
 	@Override
-	public int damageDropped(int i) {
+	public int damageDropped(IBlockState state) {
 
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
-	public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z) {
+	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, net.minecraft.entity.EntityLiving.SpawnPlacementType type) {
 
 		return false;
 	}
 
 	@Override
-	public boolean canProvidePower() {
+	public boolean canProvidePower(IBlockState state) {
 
 		return true;
 	}
 
 	@Override
-	public boolean isBeaconBase(IBlockAccess worldObj, int x, int y, int z, int beaconX, int beaconY, int beaconZ) {
-
+	public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon) {
 		return true;
 	}
 
 	@Override
-	public boolean isNormalCube(IBlockAccess world, int x, int y, int z) {
+	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
 
 		return true;
 	}
-
+	
 	@Override
-	public IIcon getIcon(int side, int metadata) {
-
-		return TEXTURES[metadata];
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister ir) {
-
-		for (int i = 0; i < NAMES.length; i++) {
-			TEXTURES[i] = ir.registerIcon("thermalfoundation:storage/Block_" + StringHelper.titleCase(NAMES[i]));
-		}
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+	    return new ItemStack(Item.getItemFromBlock(this), 1, this.getMetaFromState(world.getBlockState(pos)));
 	}
 
 	/* IInitializer */
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, ItemBlockStorage.class, "Storage");
+		GameRegistry.register(this, new ResourceLocation("Storage"));
+		GameRegistry.register(new ItemBlockStorage(this), new ResourceLocation("Storage"));
+		ModelBakery.registerItemVariants(Item.getItemFromBlock(this), 
+				new ResourceLocation("thermalfoundation:blockcopper"), 
+				new ResourceLocation("thermalfoundation:blocktin"),
+				new ResourceLocation("thermalfoundation:blocksilver"),
+				new ResourceLocation("thermalfoundation:blocklead"),
+				new ResourceLocation("thermalfoundation:blocknickel"),
+				new ResourceLocation("thermalfoundation:blockplatinum"),
+				new ResourceLocation("thermalfoundation:blockmithril"),
+				new ResourceLocation("thermalfoundation:blockelectrum"),
+				new ResourceLocation("thermalfoundation:blockinvar"),
+				new ResourceLocation("thermalfoundation:blockbronze"),
+				new ResourceLocation("thermalfoundation:blocksignalum"),
+				new ResourceLocation("thermalfoundation:blocklumium"),
+				new ResourceLocation("thermalfoundation:blockenderium")
+		);
 
 		blockCopper = new ItemStack(this, 1, 0);
 		blockTin = new ItemStack(this, 1, 1);
@@ -180,14 +212,6 @@ public class BlockStorage extends Block implements IInitializer {
 		return true;
 	}
 
-	public static final String[] NAMES = { "copper", "tin", "silver", "lead", "nickel", "platinum", "mithril", "electrum", "invar", "bronze", "signalum",
-			"lumium", "enderium" };
-	public static final IIcon[] TEXTURES = new IIcon[NAMES.length];
-	public static final int[] LIGHT = { 0, 0, 4, 0, 0, 4, 8, 0, 0, 0, 7, 15, 4 };
-	public static final float[] HARDNESS = { 5, 5, 5, 4, 10, 5, 30, 4, 20, 5, 5, 5, 40 };
-	public static final float[] RESISTANCE = { 6, 6, 6, 12, 6, 6, 120, 6, 12, 6, 9, 9, 120 };
-	public static final int[] RARITY = { 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 1, 1, 2 };
-
 	public static ItemStack blockCopper;
 	public static ItemStack blockTin;
 	public static ItemStack blockSilver;
@@ -202,4 +226,85 @@ public class BlockStorage extends Block implements IInitializer {
 	public static ItemStack blockLumium;
 	public static ItemStack blockEnderium;
 
+    public static enum EnumType implements IStringSerializable {
+    	Copper(0, "copper", 0, 0, 5, 6),
+    	Tin(1, "tin", 0, 0, 5, 6),
+    	Silver(2, "silver", 4, 0, 5, 6),
+    	Lead(3, "lead", 0, 0, 4, 12),
+    	Nickel(4, "nickel", 0, 0, 10, 6),
+    	Platinum(5, "platinum", 4, 1, 5, 6),
+    	Mithril(6, "mithril", 8, 2, 30, 120),
+    	Electrum(7, "electrum", 0, 0, 4, 6),
+    	Invar(8, "invar", 0, 0, 20, 12),
+    	Bronze(9, "bronze", 0, 0, 5, 6),
+    	Signalum(10, "signalum", 7, 1, 5, 9),
+    	Lumium(11, "lumium", 15, 1, 5, 9),
+    	Enderium(12, "enderium", 4, 2, 40, 120);
+    	
+        private static final EnumType[] META_LOOKUP = new EnumType[values().length];
+        private final int meta;
+        /** The EnumType's name. */
+        private final String name;
+        private final int lightvalue;
+        private final int rarity;
+        private final float hardness;
+        private final float resistance;
+        
+        private EnumType(int meta, String name, int lightvalue, int rarity, float hardness, float resistance) 
+        {
+        	this.meta = meta;
+        	this.name = name;
+        	this.lightvalue = lightvalue;
+        	this.rarity = rarity;
+        	this.hardness = hardness;
+        	this.resistance = resistance;
+        }
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+		@Override
+		public String toString() 
+		{
+			return getName();
+		}
+		public int getMeta()
+		{
+			return meta;
+		}
+		public int getLightvalue()
+		{
+			return lightvalue;
+		}
+		public int getRarity()
+		{
+			return rarity;
+		}
+		public float getHardness()
+		{
+			return hardness;
+		}
+		public float getResistance()
+		{
+			return resistance;
+		}
+		public static EnumType getTypeFromMeta(int meta) 
+		{
+            if (meta < 0 || meta >= META_LOOKUP.length)
+            {
+                meta = 0;
+            }
+
+            return META_LOOKUP[meta];
+		}
+        static
+        {
+            for (EnumType enumtype : values())
+            {
+                META_LOOKUP[enumtype.getMeta()] = enumtype;
+            }
+        }
+    	
+    }
 }

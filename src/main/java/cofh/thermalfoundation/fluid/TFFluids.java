@@ -14,16 +14,16 @@ public class TFFluids {
 
 	public static void preInit() {
 
-		fluidRedstone = new Fluid("redstone").setLuminosity(7).setDensity(1200).setViscosity(1500).setTemperature(300).setRarity(EnumRarity.uncommon);
+		fluidRedstone = new Fluid("redstone").setLuminosity(7).setDensity(1200).setViscosity(1500).setTemperature(300).setRarity(EnumRarity.UNCOMMON);
 		fluidGlowstone = new Fluid("glowstone").setLuminosity(15).setDensity(-500).setViscosity(100).setTemperature(300).setGaseous(true)
-				.setRarity(EnumRarity.uncommon);
-		fluidEnder = new Fluid("ender").setLuminosity(3).setDensity(4000).setViscosity(3000).setTemperature(300).setRarity(EnumRarity.uncommon);
-		fluidPyrotheum = new Fluid("pyrotheum").setLuminosity(15).setDensity(2000).setViscosity(1200).setTemperature(4000).setRarity(EnumRarity.rare);
-		fluidCryotheum = new Fluid("cryotheum").setLuminosity(0).setDensity(4000).setViscosity(3000).setTemperature(50).setRarity(EnumRarity.rare);
+				.setRarity(EnumRarity.UNCOMMON);
+		fluidEnder = new Fluid("ender").setLuminosity(3).setDensity(4000).setViscosity(3000).setTemperature(300).setRarity(EnumRarity.UNCOMMON);
+		fluidPyrotheum = new Fluid("pyrotheum").setLuminosity(15).setDensity(2000).setViscosity(1200).setTemperature(4000).setRarity(EnumRarity.RARE);
+		fluidCryotheum = new Fluid("cryotheum").setLuminosity(0).setDensity(4000).setViscosity(3000).setTemperature(50).setRarity(EnumRarity.RARE);
 		fluidAerotheum = new Fluid("aerotheum").setLuminosity(0).setDensity(-800).setViscosity(100).setTemperature(300).setGaseous(true)
-				.setRarity(EnumRarity.rare);
-		fluidPetrotheum = new Fluid("petrotheum").setLuminosity(0).setDensity(4000).setViscosity(1500).setTemperature(400).setRarity(EnumRarity.rare);
-		fluidMana = new Fluid("mana").setLuminosity(15).setDensity(600).setViscosity(6000).setTemperature(350).setRarity(EnumRarity.epic);
+				.setRarity(EnumRarity.RARE);
+		fluidPetrotheum = new Fluid("petrotheum").setLuminosity(0).setDensity(4000).setViscosity(1500).setTemperature(400).setRarity(EnumRarity.RARE);
+		fluidMana = new Fluid("mana").setLuminosity(15).setDensity(600).setViscosity(6000).setTemperature(350).setRarity(EnumRarity.EPIC);
 		fluidSteam = new Fluid("steam").setLuminosity(0).setDensity(-1000).setViscosity(200).setTemperature(750).setGaseous(true);
 		fluidCoal = new Fluid("coal").setLuminosity(0).setDensity(900).setViscosity(2000).setTemperature(300);
 
@@ -57,8 +57,8 @@ public class TFFluids {
 
 	public static void registerDispenserHandlers() {
 
-		BlockDispenser.dispenseBehaviorRegistry.putObject(TFItems.itemBucket, new DispenserFilledBucketHandler());
-		BlockDispenser.dispenseBehaviorRegistry.putObject(Items.bucket, new DispenserEmptyBucketHandler());
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(TFItems.itemBucket, new DispenserFilledBucketHandler());
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(Items.BUCKET, new DispenserEmptyBucketHandler());
 	}
 
 	public static Fluid fluidRedstone;

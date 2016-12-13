@@ -1,18 +1,5 @@
 package cofh.thermalfoundation.entity.monster;
 
-import cofh.core.CoFHProps;
-import cofh.core.entity.EntitySelectorInRangeByType;
-import cofh.core.util.CoreUtils;
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.MathHelper;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.entity.projectile.EntityBlizzBolt;
-import cofh.thermalfoundation.item.TFItems;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,12 +12,23 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.core.CoFHProps;
+import cofh.core.entity.EntitySelectorInRangeByType;
+import cofh.core.util.CoreUtils;
+import cofh.lib.util.helpers.ItemHelper;
+import cofh.lib.util.helpers.MathHelper;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.entity.projectile.EntityBlizzBolt;
+import cofh.thermalfoundation.item.TFItems;
 
 public class EntityBlizz extends EntityMob {
 

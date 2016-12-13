@@ -13,9 +13,9 @@ public class DrinkHandlerGlowstone implements ILiquidDrinkHandler {
 	@Override
 	public void onDrink(EntityLivingBase player) {
 
-		player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 60 * 20, 2));
-		player.addPotionEffect(new PotionEffect(Potion.jump.id, 60 * 20, 2));
-		player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 60 * 20, 0));
+		player.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("speed"), 60 * 20, 2));
+		player.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("jump_boost"), 60 * 20, 2));
+		player.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 60 * 20, 0));
 	}
 
 }

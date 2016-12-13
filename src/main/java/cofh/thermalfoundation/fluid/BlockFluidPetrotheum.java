@@ -1,12 +1,5 @@
 package cofh.thermalfoundation.fluid;
 
-import cofh.core.fluid.BlockFluidInteractive;
-import cofh.lib.util.BlockWrapper;
-import cofh.lib.util.helpers.BlockHelper;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -20,13 +13,19 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.core.fluid.BlockFluidInteractive;
+import cofh.lib.util.BlockWrapper;
+import cofh.lib.util.helpers.BlockHelper;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class BlockFluidPetrotheum extends BlockFluidInteractive {
 
 	Random random = new Random();
 
 	public static final int LEVELS = 6;
-	public static final Material materialFluidPetrotheum = new MaterialLiquid(MapColor.stoneColor);
+	public static final Material materialFluidPetrotheum = new MaterialLiquid(MapColor.STONE);
 
 	private static boolean enableSourceFall = true;
 	private static boolean effect = true;

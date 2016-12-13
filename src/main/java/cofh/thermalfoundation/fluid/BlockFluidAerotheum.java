@@ -1,31 +1,33 @@
 package cofh.thermalfoundation.fluid;
 
-import cofh.core.fluid.BlockFluidCoFHBase;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import java.util.Random;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Level;
+
+import cofh.core.fluid.BlockFluidCoFHBase;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class BlockFluidAerotheum extends BlockFluidCoFHBase {
 
 	Random random = new Random();
 
 	public static final int LEVELS = 6;
-	public static final Material materialFluidAerotheum = new MaterialLiquid(MapColor.airColor);
+	public static final Material materialFluidAerotheum = new MaterialLiquid(MapColor.AIR);
 
 	private static boolean effect = true;
 	private static boolean enableSourceDissipate = true;
@@ -46,7 +48,7 @@ public class BlockFluidAerotheum extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, "FluidAerotheum");
+		GameRegistry.register(this, new ResourceLocation("FluidAerotheum"));
 
 		String category = "Fluid.Aerotheum";
 		String comment = "Enable this for Fluid Aerotheum to do...things.";
@@ -71,7 +73,7 @@ public class BlockFluidAerotheum extends BlockFluidCoFHBase {
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
 
 		if (!effect) {
 			return;
@@ -99,48 +101,53 @@ public class BlockFluidAerotheum extends BlockFluidCoFHBase {
 			return;
 		}
 		if (world.getTotalWorldTime() % 8 == 0 && entity instanceof EntityLivingBase && !((EntityLivingBase) entity).isEntityUndead()) {
-			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.invisibility.id, 3 * 20, 0));
-			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 30 * 20, 0));
+			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("invisibility"), 3 * 20, 0));
+			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("water_breathing"), 30 * 20, 0));
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+	public int getLightValue(IBlockState state) {
 
 		return TFFluids.fluidAerotheum.getLuminosity();
 	}
 
 	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand) {
+	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
 
-		if (world.getBlockMetadata(x, y, z) == 0) {
+		if (state.getBlock().getMetaFromState(world.getBlockState(pos)) == 0) {
 			if (rand.nextInt(3) == 0) {
-				if (shouldSourceBlockCondense(world, x, y, z)) {
-					world.setBlockToAir(x, y, z);
+				if (shouldSourceBlockCondense(world, state, pos)) {
+					world.setBlockToAir(pos);
 					return;
 				}
-				if (shouldSourceBlockFloat(world, x, y, z)) {
-					world.setBlock(x, y + densityDir, z, this, 0, 3);
-					world.setBlockToAir(x, y, z);
+				if (shouldSourceBlockFloat(world, state, pos)) {
+					world.setBlockState(new BlockPos(pos).add(0, densityDir, 0), this.getDefaultState(), 3);
+					world.setBlockToAir(pos);
 					return;
 				}
 			}
-		} else if (y + densityDir > maxHeight) {
+		} else if (pos.getY() + densityDir > maxHeight) {
 
-			int quantaRemaining = quantaPerBlock - world.getBlockMetadata(x, y, z);
+			int quantaRemaining = quantaPerBlock - state.getBlock().getMetaFromState(world.getBlockState(pos));
 			int expQuanta = -101;
-			int y2 = y - densityDir;
+			BlockPos pos2 = new BlockPos(pos).add(0, -(densityDir), 0);
 
-			if (world.getBlock(x, y2, z) == this || world.getBlock(x - 1, y2, z) == this || world.getBlock(x + 1, y2, z) == this
-					|| world.getBlock(x, y2, z - 1) == this || world.getBlock(x, y2, z + 1) == this) {
+			if (
+					world.getBlockState(pos2) == this.getDefaultState() 
+					|| world.getBlockState(new BlockPos(pos2).add(-1, 0, 0)) == this.getDefaultState() 
+					|| world.getBlockState(new BlockPos(pos).add(1, 0, 0)) == this.getDefaultState()
+					|| world.getBlockState(new BlockPos(pos).add(0, 0, -1)) == this.getDefaultState() 
+					|| world.getBlockState(new BlockPos(pos).add(0, 0, 1)) == this.getDefaultState()
+				) {
 				expQuanta = quantaPerBlock - 1;
 
 			} else {
 				int maxQuanta = -100;
-				maxQuanta = getLargerQuanta(world, x - 1, y, z, maxQuanta);
-				maxQuanta = getLargerQuanta(world, x + 1, y, z, maxQuanta);
-				maxQuanta = getLargerQuanta(world, x, y, z - 1, maxQuanta);
-				maxQuanta = getLargerQuanta(world, x, y, z + 1, maxQuanta);
+				maxQuanta = getLargerQuanta(world, new BlockPos(pos).add(-1, 0, 0), maxQuanta);
+				maxQuanta = getLargerQuanta(world, new BlockPos(pos).add(1, 0, 0), maxQuanta);
+				maxQuanta = getLargerQuanta(world, new BlockPos(pos).add(0, 0, -1), maxQuanta);
+				maxQuanta = getLargerQuanta(world, new BlockPos(pos).add(0, 0, 1), maxQuanta);
 
 				expQuanta = maxQuanta - 1;
 			}
@@ -148,26 +155,26 @@ public class BlockFluidAerotheum extends BlockFluidCoFHBase {
 			if (expQuanta != quantaRemaining) {
 				quantaRemaining = expQuanta;
 				if (expQuanta <= 0) {
-					world.setBlockToAir(x, y, z);
+					world.setBlockToAir(pos);
 				} else {
-					world.setBlockMetadataWithNotify(x, y, z, quantaPerBlock - expQuanta, 3);
-					world.scheduleBlockUpdate(x, y, z, this, tickRate);
-					world.notifyBlocksOfNeighborChange(x, y, z, this);
+					world.notifyBlockUpdate(pos, state, state.withProperty(LEVEL, quantaPerBlock - expQuanta), 3);
+					world.scheduleUpdate(pos, this, tickRate);
+					world.notifyNeighborsOfStateChange(pos, this);
 				}
 			}
 			return;
 		}
-		super.updateTick(world, x, y, z, rand);
+		super.updateTick(world, pos, state, rand);
 	}
 
-	protected boolean shouldSourceBlockCondense(World world, int x, int y, int z) {
+	protected boolean shouldSourceBlockCondense(World world, IBlockState state, BlockPos pos) {
 
-		return enableSourceDissipate && (y + densityDir > maxHeight || y + densityDir > world.getHeight());
+		return enableSourceDissipate && (pos.getY() + densityDir > maxHeight || pos.getY() + densityDir > world.getHeight());
 	}
 
-	protected boolean shouldSourceBlockFloat(World world, int x, int y, int z) {
+	protected boolean shouldSourceBlockFloat(World world, IBlockState state, BlockPos pos) {
 
-		return enableSourceFloat && (world.getBlock(x, y + densityDir, z) == this && world.getBlockMetadata(x, y + densityDir, z) != 0);
+		return enableSourceFloat && (world.getBlockState(pos.add(0, densityDir, 0)) == this && state.getBlock().getMetaFromState(world.getBlockState(pos)) != 0);
 	}
 
 }

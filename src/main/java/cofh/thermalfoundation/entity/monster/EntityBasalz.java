@@ -1,18 +1,5 @@
 package cofh.thermalfoundation.entity.monster;
 
-import cofh.core.CoFHProps;
-import cofh.core.entity.EntitySelectorInRangeByType;
-import cofh.core.util.CoreUtils;
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.MathHelper;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.entity.projectile.EntityBasalzBolt;
-import cofh.thermalfoundation.item.TFItems;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,12 +10,25 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.core.CoFHProps;
+import cofh.core.entity.EntitySelectorInRangeByType;
+import cofh.core.util.CoreUtils;
+import cofh.lib.util.helpers.ItemHelper;
+import cofh.lib.util.helpers.MathHelper;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.entity.projectile.EntityBasalzBolt;
+import cofh.thermalfoundation.item.TFItems;
 
 public class EntityBasalz extends EntityMob {
 
@@ -155,15 +155,15 @@ public class EntityBasalz extends EntityMob {
 	}
 
 	@Override
-	protected String getHurtSound() {
+	protected SoundEvent getHurtSound() {
 
-		return "mob.blaze.hit";
+		return SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.blaze.hurt"));
 	}
 
 	@Override
-	protected String getDeathSound() {
+	protected SoundEvent getDeathSound() {
 
-		return "mob.blaze.death";
+		return SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.blaze.death"));
 	}
 
 	@Override

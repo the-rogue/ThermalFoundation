@@ -1,21 +1,22 @@
 package cofh.thermalfoundation.fluid;
 
-import cofh.core.fluid.BlockFluidCoFHBase;
-import cofh.core.util.CoreUtils;
-import cofh.thermalfoundation.ThermalFoundation;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.core.fluid.BlockFluidCoFHBase;
+import cofh.core.util.CoreUtils;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class BlockFluidEnder extends BlockFluidCoFHBase {
 
 	public static final int LEVELS = 4;
-	public static final Material materialFluidEnder = new MaterialLiquid(MapColor.greenColor);
+	public static final Material materialFluidEnder = new MaterialLiquid(MapColor.GREEN);
 
 	private static boolean effect = true;
 
@@ -33,7 +34,7 @@ public class BlockFluidEnder extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, "FluidEnder");
+		GameRegistry.register(this, new ResourceLocation("FluidEnder"));
 
 		String category = "Fluid.Ender";
 		String comment = "Enable this for Fluid Ender to randomly teleport entities on contact.";
@@ -43,24 +44,22 @@ public class BlockFluidEnder extends BlockFluidCoFHBase {
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
 
 		if (!effect || world.isRemote) {
 			return;
 		}
 		if (world.getTotalWorldTime() % 8 == 0) {
-			int x2 = x - 8 + world.rand.nextInt(17);
-			int y2 = y + world.rand.nextInt(8);
-			int z2 = z - 8 + world.rand.nextInt(17);
+			pos.add(-8 + world.rand.nextInt(17), world.rand.nextInt(8), -8 + world.rand.nextInt(17));
 
-			if (!world.getBlock(x2, y2, z2).getMaterial().isSolid()) {
-				CoreUtils.teleportEntityTo(entity, x2, y2, z2);
+			if (!world.getBlockState(pos).getMaterial().isSolid()) {
+				CoreUtils.teleportEntityTo(entity, pos.getX(), pos.getY(), pos.getZ());
 			}
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+	public int getLightValue(IBlockState state) {
 
 		return TFFluids.fluidEnder.getLuminosity();
 	}

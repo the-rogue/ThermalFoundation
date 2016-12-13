@@ -1,18 +1,16 @@
 package cofh.thermalfoundation.gui.container;
 
+import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import cofh.core.util.oredict.OreDictionaryArbiter;
 import cofh.lib.gui.container.ContainerInventoryItem;
 import cofh.lib.gui.slot.SlotLocked;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.thermalfoundation.network.PacketTFBase;
 import cofh.thermalfoundation.util.LexiconManager;
-
-import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
-import net.minecraft.item.ItemStack;
 
 public class ContainerLexiconStudy extends ContainerInventoryItem {
 
@@ -157,9 +155,9 @@ public class ContainerLexiconStudy extends ContainerInventoryItem {
 
 		super.detectAndSendChanges();
 
-		for (int j = 0; j < this.crafters.size(); ++j) {
+		for (int j = 0; j < this.listeners.size(); ++j) {
 			if (syncClient) {
-				((ICrafting) this.crafters.get(j)).sendProgressBarUpdate(this, 0, hasPreferredStack ? 1 : 0);
+				this.listeners.get(j).sendProgressBarUpdate(this, 0, hasPreferredStack ? 1 : 0);
 				syncClient = false;
 			}
 		}

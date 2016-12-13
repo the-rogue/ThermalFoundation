@@ -1,14 +1,12 @@
 package cofh.thermalfoundation.plugins.tconstruct;
 
 import static cofh.lib.util.helpers.ItemHelper.cloneStack;
-
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import cofh.asm.relauncher.Strippable;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.item.TFItems;
-import cpw.mods.fml.common.event.FMLInterModComms;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 
 public class TConstructPlugin {
 
@@ -45,7 +43,7 @@ public class TConstructPlugin {
 		tag.setInteger("Bow_DrawSpeed", 40);
 		tag.setFloat("Projectile_Mass", 2.5f);
 		tag.setFloat("Projectile_Fragility", 0.7f);
-		tag.setString("Style", EnumChatFormatting.AQUA.toString());
+		tag.setString("Style", TextFormatting.AQUA.toString());
 		tag.setInteger("Color", 0xFFD9EEEB);
 		FMLInterModComms.sendMessage("TConstruct", "addMaterial", tag);
 
@@ -78,7 +76,7 @@ public class TConstructPlugin {
 		tag.setInteger("Bow_DrawSpeed", 30);
 		tag.setFloat("Projectile_Mass", 6f);
 		tag.setFloat("Projectile_Fragility", 0.9f);
-		tag.setString("Style", EnumChatFormatting.DARK_PURPLE.toString());
+		tag.setString("Style", TextFormatting.DARK_PURPLE.toString());
 		tag.setInteger("Color", 0xFF7380A7);
 		FMLInterModComms.sendMessage("TConstruct", "addMaterial", tag);
 
@@ -111,7 +109,7 @@ public class TConstructPlugin {
 		tag.setInteger("Bow_DrawSpeed", 50);
 		tag.setFloat("Projectile_Mass", 3f);
 		tag.setFloat("Projectile_Fragility", 0.6f);
-		tag.setString("Style", EnumChatFormatting.YELLOW.toString());
+		tag.setString("Style", TextFormatting.YELLOW.toString());
 		tag.setInteger("Color", 0xFFFFFFDE);
 		FMLInterModComms.sendMessage("TConstruct", "addMaterial", tag);
 
@@ -144,7 +142,7 @@ public class TConstructPlugin {
 		tag.setInteger("Bow_DrawSpeed", 60);
 		tag.setFloat("Projectile_Mass", 5.4f);
 		tag.setFloat("Projectile_Fragility", 0.4f);
-		tag.setString("Style", EnumChatFormatting.AQUA.toString());
+		tag.setString("Style", TextFormatting.AQUA.toString());
 		tag.setInteger("Color", 0xFF6FE1ED);
 		FMLInterModComms.sendMessage("TConstruct", "addMaterial", tag);
 
@@ -177,7 +175,7 @@ public class TConstructPlugin {
 		tag.setInteger("Bow_DrawSpeed", 47);
 		tag.setFloat("Projectile_Mass", 3f);
 		tag.setFloat("Projectile_Fragility", 0.7f);
-		tag.setString("Style", EnumChatFormatting.GRAY.toString());
+		tag.setString("Style", TextFormatting.GRAY.toString());
 		tag.setInteger("Color", 0xFFDCE1DE);
 		FMLInterModComms.sendMessage("TConstruct", "addMaterial", tag);
 
@@ -215,7 +213,7 @@ public class TConstructPlugin {
 		tag.setInteger("Bow_DrawSpeed", 37);
 		tag.setFloat("Projectile_Mass", 5f);
 		tag.setFloat("Projectile_Fragility", 0.7f);
-		tag.setString("Style", EnumChatFormatting.YELLOW.toString());
+		tag.setString("Style", TextFormatting.YELLOW.toString());
 		tag.setInteger("Color", 0xFFEEE155);
 		FMLInterModComms.sendMessage("TConstruct", "addMaterial", tag);
 

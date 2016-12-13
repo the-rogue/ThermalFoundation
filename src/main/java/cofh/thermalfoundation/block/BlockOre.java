@@ -1,82 +1,121 @@
 package cofh.thermalfoundation.block;
 
-import cofh.api.core.IInitializer;
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.StringHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.item.TFItems;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.List;
+import java.util.Random;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.api.core.IInitializer;
+import cofh.lib.util.helpers.ItemHelper;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.item.TFItems;
 
 public class BlockOre extends Block implements IInitializer {
+	public static final PropertyEnum<EnumType> VARIANT = PropertyEnum.<EnumType>create("variant", EnumType.class);
 
 	public BlockOre() {
 
-		super(Material.rock);
+		super(Material.ROCK);
 		setHardness(3.0F);
 		setResistance(5.0F);
-		setStepSound(soundTypeStone);
+		setSoundType(SoundType.STONE);
 		setCreativeTab(ThermalFoundation.tabCommon);
-		setBlockName("thermalfoundation.ore");
+		setUnlocalizedName("thermalfoundation:ore");
+		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.Copper));
 
 		setHarvestLevel("pickaxe", 2);
-		setHarvestLevel("pickaxe", 1, 0);
-		setHarvestLevel("pickaxe", 1, 1);
-		setHarvestLevel("pickaxe", 3, 6);
+		setHarvestLevel("pickaxe", 1, getStateFromType(EnumType.Copper));
+		setHarvestLevel("pickaxe", 1, getStateFromType(EnumType.Tin));
+		setHarvestLevel("pickaxe", 3, getStateFromType(EnumType.Mithril));
+	}
+	
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, new IProperty[] {VARIANT});
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+	    return getDefaultState().withProperty(VARIANT, EnumType.getTypeFromMeta(meta));
+	}
+	
+	public IBlockState getStateFromType(EnumType type) {
+	    return getDefaultState().withProperty(VARIANT, type);
 	}
 
 	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+	public int getMetaFromState(IBlockState state) {
+	    return state.getValue(VARIANT).getMeta();
+	}
 
-		for (int i = 0; i < NAMES.length; i++) {
+	@Override
+	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+
+		for (int i = 0; i < EnumType.values().length; i++) {
 			list.add(new ItemStack(item, 1, i));
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+	public int getLightValue(IBlockState state) {
 
-		return LIGHT[world.getBlockMetadata(x, y, z)];
+		return state.getValue(VARIANT).getLightvalue();
 	}
 
 	@Override
-	public int damageDropped(int i) {
+	public int damageDropped(IBlockState state) {
 
-		return i;
+		return getMetaFromState(state);
 	}
-
+	
+    @Nullable
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    {
+        //TODO
+    	return null;
+    }
+	
 	@Override
-	public IIcon getIcon(int side, int metadata) {
-
-		return TEXTURES[metadata];
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+	    return new ItemStack(Item.getItemFromBlock(this), 1, this.getMetaFromState(world.getBlockState(pos)));
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister ir) {
-
-		for (int i = 0; i < NAMES.length; i++) {
-			TEXTURES[i] = ir.registerIcon("thermalfoundation:ore/Ore_" + StringHelper.titleCase(NAMES[i]));
-		}
-	}
 
 	/* IInitializer */
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, ItemBlockOre.class, "Ore");
+		GameRegistry.register(this, new ResourceLocation("Ore"));
+		GameRegistry.register(new ItemBlockOre(this), new ResourceLocation("Ore"));
+		
+		ModelBakery.registerItemVariants(Item.getItemFromBlock(this), 
+				new ResourceLocation("thermalfoundation:orecopper"), 
+				new ResourceLocation("thermalfoundation:oretin"),
+				new ResourceLocation("thermalfoundation:oresilver"),
+				new ResourceLocation("thermalfoundation:orelead"),
+				new ResourceLocation("thermalfoundation:orenickel"),
+				new ResourceLocation("thermalfoundation:oreplatinum"),
+				new ResourceLocation("thermalfoundation:oremithril")
+		);
+		
 
 		oreCopper = new ItemStack(this, 1, 0);
 		oreTin = new ItemStack(this, 1, 1);
@@ -117,11 +156,6 @@ public class BlockOre extends Block implements IInitializer {
 		return true;
 	}
 
-	public static final String[] NAMES = { "copper", "tin", "silver", "lead", "nickel", "platinum", "mithril" };
-	public static final IIcon[] TEXTURES = new IIcon[NAMES.length];
-	public static final int[] LIGHT = { 0, 0, 4, 0, 0, 4, 8 };
-	public static final int[] RARITY = { 0, 0, 0, 0, 0, 1, 2 };
-
 	public static ItemStack oreCopper;
 	public static ItemStack oreTin;
 	public static ItemStack oreSilver;
@@ -130,4 +164,67 @@ public class BlockOre extends Block implements IInitializer {
 	public static ItemStack orePlatinum;
 	public static ItemStack oreMithril;
 
+    public static enum EnumType implements IStringSerializable {
+    	Copper(0, "copper", 0, 0),
+    	Tin(1, "tin", 0, 0),
+    	Silver(2, "silver", 4, 0),
+    	Lead(3, "lead", 0, 0),
+    	Nickel(4, "nickel", 0, 0),
+    	Platinum(5, "platinum", 4, 1),
+    	Mithril(6, "mithril", 8, 2);
+    	
+        private static final EnumType[] META_LOOKUP = new EnumType[values().length];
+        private final int meta;
+        /** The EnumType's name. */
+        private final String name;
+        private final int lightvalue;
+        private final int rarity;
+        
+        private EnumType(int meta, String name, int lightvalue, int rarity) 
+        {
+        	this.meta = meta;
+        	this.name = name;
+        	this.lightvalue = lightvalue;
+        	this.rarity = rarity;
+        }
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+		@Override
+		public String toString() 
+		{
+			return getName();
+		}
+		public int getMeta()
+		{
+			return meta;
+		}
+		public int getLightvalue()
+		{
+			return lightvalue;
+		}
+		public int getRarity()
+		{
+			return rarity;
+		}
+		public static EnumType getTypeFromMeta(int meta) 
+		{
+            if (meta < 0 || meta >= META_LOOKUP.length)
+            {
+                meta = 0;
+            }
+
+            return META_LOOKUP[meta];
+		}
+        static
+        {
+            for (EnumType enumtype : values())
+            {
+                META_LOOKUP[enumtype.getMeta()] = enumtype;
+            }
+        }
+    	
+    }
 }

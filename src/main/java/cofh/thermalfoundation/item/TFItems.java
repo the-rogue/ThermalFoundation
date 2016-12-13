@@ -1,7 +1,11 @@
 package cofh.thermalfoundation.item;
 
-import static cofh.lib.util.helpers.ItemHelper.*;
-
+import static cofh.lib.util.helpers.ItemHelper.ShapedRecipe;
+import static cofh.lib.util.helpers.ItemHelper.ShapelessRecipe;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import cofh.core.item.ItemBase;
 import cofh.core.item.ItemBucket;
 import cofh.core.util.energy.FurnaceFuelHandler;
@@ -12,127 +16,123 @@ import cofh.thermalfoundation.block.TFBlocks;
 import cofh.thermalfoundation.core.TFProps;
 import cofh.thermalfoundation.fluid.TFFluids;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.oredict.OreDictionary;
-
+@SuppressWarnings("deprecation")
 public class TFItems {
 
 	public static void preInit() {
 
-		itemLexicon = (ItemLexicon) new ItemLexicon("lexicon").setUnlocalizedName("tome", "lexicon");
+		itemLexicon = (ItemLexicon) new ItemLexicon("lexicon");
 		itemBucket = (ItemBucket) new ItemBucket("thermalfoundation").setUnlocalizedName("bucket").setCreativeTab(ThermalFoundation.tabCommon);
 		itemMaterial = (ItemBase) new ItemBase("thermalfoundation").setUnlocalizedName("material").setCreativeTab(ThermalFoundation.tabCommon);
 
-		bucketRedstone = itemBucket.addOreDictItem(0, "bucketRedstone", 1);
-		bucketGlowstone = itemBucket.addOreDictItem(1, "bucketGlowstone", 1);
-		bucketEnder = itemBucket.addOreDictItem(2, "bucketEnder", 1);
-		bucketPyrotheum = itemBucket.addOreDictItem(3, "bucketPyrotheum", 2);
-		bucketCryotheum = itemBucket.addOreDictItem(4, "bucketCryotheum", 2);
-		bucketAerotheum = itemBucket.addOreDictItem(7, "bucketAerotheum", 2);
-		bucketPetrotheum = itemBucket.addOreDictItem(8, "bucketPetrotheum", 2);
-		bucketMana = itemBucket.addItem(5, "bucketMana", 3);
-		bucketCoal = itemBucket.addOreDictItem(6, "bucketCoal");
+		bucketRedstone = itemBucket.addOreDictItem(0, "thermalfoundation", "bucketRedstone", 1);
+		bucketGlowstone = itemBucket.addOreDictItem(1, "thermalfoundation", "bucketGlowstone", 1);
+		bucketEnder = itemBucket.addOreDictItem(2, "thermalfoundation", "bucketEnder", 1);
+		bucketPyrotheum = itemBucket.addOreDictItem(3, "thermalfoundation", "bucketPyrotheum", 2);
+		bucketCryotheum = itemBucket.addOreDictItem(4, "thermalfoundation", "bucketCryotheum", 2);
+		bucketAerotheum = itemBucket.addOreDictItem(7, "thermalfoundation", "bucketAerotheum", 2);
+		bucketPetrotheum = itemBucket.addOreDictItem(8, "thermalfoundation", "bucketPetrotheum", 2);
+		bucketMana = itemBucket.addItem(5, "thermalfoundation", "bucketMana", 3);
+		bucketCoal = itemBucket.addOreDictItem(6, "thermalfoundation", "bucketCoal");
 
 		lexicon = new ItemStack(itemLexicon);
 		itemLexicon.setEmpoweredState(lexicon, false);
 
 		/* Vanilla Derived */
-		dustCoal = itemMaterial.addOreDictItem(2, "dustCoal");
+		dustCoal = itemMaterial.addOreDictItem(2, "thermalfoundation", "dustCoal");
 		OreDictionary.registerOre("dyeBlack", dustCoal.copy());
-		dustCharcoal = itemMaterial.addOreDictItem(3, "dustCharcoal");
+		dustCharcoal = itemMaterial.addOreDictItem(3, "thermalfoundation", "dustCharcoal");
 		OreDictionary.registerOre("dyeBlack", dustCharcoal.copy());
-		dustObsidian = itemMaterial.addOreDictItem(4, "dustObsidian");
+		dustObsidian = itemMaterial.addOreDictItem(4, "thermalfoundation", "dustObsidian");
 
-		dustSulfur = itemMaterial.addOreDictItem(16, "dustSulfur");
+		dustSulfur = itemMaterial.addOreDictItem(16, "thermalfoundation", "dustSulfur");
 		OreDictionary.registerOre("dyeYellow", dustSulfur.copy());
-		dustNiter = itemMaterial.addItem(17, "dustNiter");
+		dustNiter = itemMaterial.addItem(17, "thermalfoundation", "dustNiter");
 		OreDictionary.registerOre("dustSaltpeter", dustNiter);
 
-		crystalCinnabar = itemMaterial.addOreDictItem(20, "crystalCinnabar");
+		crystalCinnabar = itemMaterial.addOreDictItem(20, "thermalfoundation", "crystalCinnabar");
 
-		dustIron = itemMaterial.addOreDictItem(0, "dustIron");
-		dustGold = itemMaterial.addOreDictItem(1, "dustGold");
+		dustIron = itemMaterial.addOreDictItem(0, "thermalfoundation", "dustIron");
+		dustGold = itemMaterial.addOreDictItem(1, "thermalfoundation", "dustGold");
 		/* Dusts */
-		dustCopper = itemMaterial.addOreDictItem(32, "dustCopper");
-		dustTin = itemMaterial.addOreDictItem(33, "dustTin");
-		dustSilver = itemMaterial.addOreDictItem(34, "dustSilver");
-		dustLead = itemMaterial.addOreDictItem(35, "dustLead");
-		dustNickel = itemMaterial.addOreDictItem(36, "dustNickel");
-		dustPlatinum = itemMaterial.addOreDictItem(37, "dustPlatinum", 1);
-		dustMithril = itemMaterial.addOreDictItem(38, "dustMithril", 2);
-		dustElectrum = itemMaterial.addOreDictItem(39, "dustElectrum");
-		dustInvar = itemMaterial.addOreDictItem(40, "dustInvar");
-		dustBronze = itemMaterial.addOreDictItem(41, "dustBronze");
-		dustSignalum = itemMaterial.addOreDictItem(42, "dustSignalum", 1);
-		dustLumium = itemMaterial.addOreDictItem(43, "dustLumium", 1);
-		dustEnderium = itemMaterial.addOreDictItem(44, "dustEnderium", 2);
+		dustCopper = itemMaterial.addOreDictItem(32, "thermalfoundation", "dustCopper");
+		dustTin = itemMaterial.addOreDictItem(33, "thermalfoundation", "dustTin");
+		dustSilver = itemMaterial.addOreDictItem(34, "thermalfoundation", "dustSilver");
+		dustLead = itemMaterial.addOreDictItem(35, "thermalfoundation", "dustLead");
+		dustNickel = itemMaterial.addOreDictItem(36, "thermalfoundation", "dustNickel");
+		dustPlatinum = itemMaterial.addOreDictItem(37, "thermalfoundation", "dustPlatinum", 1);
+		dustMithril = itemMaterial.addOreDictItem(38, "thermalfoundation", "dustMithril", 2);
+		dustElectrum = itemMaterial.addOreDictItem(39, "thermalfoundation", "dustElectrum");
+		dustInvar = itemMaterial.addOreDictItem(40, "thermalfoundation", "dustInvar");
+		dustBronze = itemMaterial.addOreDictItem(41, "thermalfoundation", "dustBronze");
+		dustSignalum = itemMaterial.addOreDictItem(42, "thermalfoundation", "dustSignalum", 1);
+		dustLumium = itemMaterial.addOreDictItem(43, "thermalfoundation", "dustLumium", 1);
+		dustEnderium = itemMaterial.addOreDictItem(44, "thermalfoundation", "dustEnderium", 2);
 
 		/* Ingots */
-		ingotCopper = itemMaterial.addOreDictItem(64, "ingotCopper");
-		ingotTin = itemMaterial.addOreDictItem(65, "ingotTin");
-		ingotSilver = itemMaterial.addOreDictItem(66, "ingotSilver");
-		ingotLead = itemMaterial.addOreDictItem(67, "ingotLead");
-		ingotNickel = itemMaterial.addOreDictItem(68, "ingotNickel");
-		ingotPlatinum = itemMaterial.addOreDictItem(69, "ingotPlatinum", 1);
-		ingotMithril = itemMaterial.addOreDictItem(70, "ingotMithril", 2);
-		ingotElectrum = itemMaterial.addOreDictItem(71, "ingotElectrum");
-		ingotInvar = itemMaterial.addOreDictItem(72, "ingotInvar");
-		ingotBronze = itemMaterial.addOreDictItem(73, "ingotBronze");
-		ingotSignalum = itemMaterial.addOreDictItem(74, "ingotSignalum", 1);
-		ingotLumium = itemMaterial.addOreDictItem(75, "ingotLumium", 1);
-		ingotEnderium = itemMaterial.addOreDictItem(76, "ingotEnderium", 2);
+		ingotCopper = itemMaterial.addOreDictItem(64, "thermalfoundation", "ingotCopper");
+		ingotTin = itemMaterial.addOreDictItem(65, "thermalfoundation", "ingotTin");
+		ingotSilver = itemMaterial.addOreDictItem(66, "thermalfoundation", "ingotSilver");
+		ingotLead = itemMaterial.addOreDictItem(67, "thermalfoundation", "ingotLead");
+		ingotNickel = itemMaterial.addOreDictItem(68, "thermalfoundation", "ingotNickel");
+		ingotPlatinum = itemMaterial.addOreDictItem(69, "thermalfoundation", "ingotPlatinum", 1);
+		ingotMithril = itemMaterial.addOreDictItem(70, "thermalfoundation", "ingotMithril", 2);
+		ingotElectrum = itemMaterial.addOreDictItem(71, "thermalfoundation", "ingotElectrum");
+		ingotInvar = itemMaterial.addOreDictItem(72, "thermalfoundation", "ingotInvar");
+		ingotBronze = itemMaterial.addOreDictItem(73, "thermalfoundation", "ingotBronze");
+		ingotSignalum = itemMaterial.addOreDictItem(74, "thermalfoundation", "ingotSignalum", 1);
+		ingotLumium = itemMaterial.addOreDictItem(75, "thermalfoundation", "ingotLumium", 1);
+		ingotEnderium = itemMaterial.addOreDictItem(76, "thermalfoundation", "ingotEnderium", 2);
 
-		nuggetIron = itemMaterial.addOreDictItem(8, "nuggetIron");
+		nuggetIron = itemMaterial.addOreDictItem(8, "thermalfoundation", "nuggetIron");
 		/* Nuggets */
-		nuggetCopper = itemMaterial.addOreDictItem(96, "nuggetCopper");
-		nuggetTin = itemMaterial.addOreDictItem(97, "nuggetTin");
-		nuggetSilver = itemMaterial.addOreDictItem(98, "nuggetSilver");
-		nuggetLead = itemMaterial.addOreDictItem(99, "nuggetLead");
-		nuggetNickel = itemMaterial.addOreDictItem(100, "nuggetNickel");
-		nuggetPlatinum = itemMaterial.addOreDictItem(101, "nuggetPlatinum", 1);
-		nuggetMithril = itemMaterial.addOreDictItem(102, "nuggetMithril", 2);
-		nuggetElectrum = itemMaterial.addOreDictItem(103, "nuggetElectrum");
-		nuggetInvar = itemMaterial.addOreDictItem(104, "nuggetInvar");
-		nuggetBronze = itemMaterial.addOreDictItem(105, "nuggetBronze");
-		nuggetSignalum = itemMaterial.addOreDictItem(106, "nuggetSignalum", 1);
-		nuggetLumium = itemMaterial.addOreDictItem(107, "nuggetLumium", 1);
-		nuggetEnderium = itemMaterial.addOreDictItem(108, "nuggetEnderium", 2);
+		nuggetCopper = itemMaterial.addOreDictItem(96, "thermalfoundation", "nuggetCopper");
+		nuggetTin = itemMaterial.addOreDictItem(97, "thermalfoundation", "nuggetTin");
+		nuggetSilver = itemMaterial.addOreDictItem(98, "thermalfoundation", "nuggetSilver");
+		nuggetLead = itemMaterial.addOreDictItem(99, "thermalfoundation", "nuggetLead");
+		nuggetNickel = itemMaterial.addOreDictItem(100, "thermalfoundation", "nuggetNickel");
+		nuggetPlatinum = itemMaterial.addOreDictItem(101, "thermalfoundation", "nuggetPlatinum", 1);
+		nuggetMithril = itemMaterial.addOreDictItem(102, "thermalfoundation", "nuggetMithril", 2);
+		nuggetElectrum = itemMaterial.addOreDictItem(103, "thermalfoundation", "nuggetElectrum");
+		nuggetInvar = itemMaterial.addOreDictItem(104, "thermalfoundation", "nuggetInvar");
+		nuggetBronze = itemMaterial.addOreDictItem(105, "thermalfoundation", "nuggetBronze");
+		nuggetSignalum = itemMaterial.addOreDictItem(106, "thermalfoundation", "nuggetSignalum", 1);
+		nuggetLumium = itemMaterial.addOreDictItem(107, "thermalfoundation", "nuggetLumium", 1);
+		nuggetEnderium = itemMaterial.addOreDictItem(108, "thermalfoundation", "nuggetEnderium", 2);
 
-		gearIron = itemMaterial.addOreDictItem(12, "gearIron");
-		gearGold = itemMaterial.addOreDictItem(13, "gearGold");
+		gearIron = itemMaterial.addOreDictItem(12, "thermalfoundation", "gearIron");
+		gearGold = itemMaterial.addOreDictItem(13, "thermalfoundation", "gearGold");
 		/* Gears */
-		gearCopper = itemMaterial.addOreDictItem(128, "gearCopper");
-		gearTin = itemMaterial.addOreDictItem(129, "gearTin");
-		gearSilver = itemMaterial.addOreDictItem(130, "gearSilver");
-		gearLead = itemMaterial.addOreDictItem(131, "gearLead");
-		gearNickel = itemMaterial.addOreDictItem(132, "gearNickel");
-		gearPlatinum = itemMaterial.addOreDictItem(133, "gearPlatinum", 1);
-		gearMithril = itemMaterial.addOreDictItem(134, "gearMithril", 2);
-		gearElectrum = itemMaterial.addOreDictItem(135, "gearElectrum");
-		gearInvar = itemMaterial.addOreDictItem(136, "gearInvar");
-		gearBronze = itemMaterial.addOreDictItem(137, "gearBronze");
-		gearSignalum = itemMaterial.addOreDictItem(138, "gearSignalum", 1);
-		gearLumium = itemMaterial.addOreDictItem(139, "gearLumium", 1);
-		gearEnderium = itemMaterial.addOreDictItem(140, "gearEnderium", 2);
+		gearCopper = itemMaterial.addOreDictItem(128, "thermalfoundation", "gearCopper");
+		gearTin = itemMaterial.addOreDictItem(129, "thermalfoundation", "gearTin");
+		gearSilver = itemMaterial.addOreDictItem(130, "thermalfoundation", "gearSilver");
+		gearLead = itemMaterial.addOreDictItem(131, "thermalfoundation", "gearLead");
+		gearNickel = itemMaterial.addOreDictItem(132, "thermalfoundation", "gearNickel");
+		gearPlatinum = itemMaterial.addOreDictItem(133, "thermalfoundation", "gearPlatinum", 1);
+		gearMithril = itemMaterial.addOreDictItem(134, "thermalfoundation", "gearMithril", 2);
+		gearElectrum = itemMaterial.addOreDictItem(135, "thermalfoundation", "gearElectrum");
+		gearInvar = itemMaterial.addOreDictItem(136, "thermalfoundation", "gearInvar");
+		gearBronze = itemMaterial.addOreDictItem(137, "thermalfoundation", "gearBronze");
+		gearSignalum = itemMaterial.addOreDictItem(138, "thermalfoundation", "gearSignalum", 1);
+		gearLumium = itemMaterial.addOreDictItem(139, "thermalfoundation", "gearLumium", 1);
+		gearEnderium = itemMaterial.addOreDictItem(140, "thermalfoundation", "gearEnderium", 2);
 
 		/* Additional Items */
-		dustPyrotheum = itemMaterial.addOreDictItem(512, "dustPyrotheum", 2);
-		dustCryotheum = itemMaterial.addOreDictItem(513, "dustCryotheum", 2);
-		dustAerotheum = itemMaterial.addOreDictItem(514, "dustAerotheum", 2);
-		dustPetrotheum = itemMaterial.addOreDictItem(515, "dustPetrotheum", 2);
-		dustMana = itemMaterial.addItem(516, "dustMana", 3);
+		dustPyrotheum = itemMaterial.addOreDictItem(512, "thermalfoundation", "dustPyrotheum", 2);
+		dustCryotheum = itemMaterial.addOreDictItem(513, "thermalfoundation", "dustCryotheum", 2);
+		dustAerotheum = itemMaterial.addOreDictItem(514, "thermalfoundation", "dustAerotheum", 2);
+		dustPetrotheum = itemMaterial.addOreDictItem(515, "thermalfoundation", "dustPetrotheum", 2);
+		dustMana = itemMaterial.addItem(516, "thermalfoundation", "dustMana", 3);
 
 		FurnaceFuelHandler.registerFuel(dustPyrotheum, TFProps.dustPyrotheumFuel);
 
 		/* Mob Drops */
-		rodBlizz = itemMaterial.addOreDictItem(1024, "rodBlizz");
-		dustBlizz = itemMaterial.addOreDictItem(1025, "dustBlizz");
-		rodBlitz = itemMaterial.addOreDictItem(1026, "rodBlitz");
-		dustBlitz = itemMaterial.addOreDictItem(1027, "dustBlitz");
-		rodBasalz = itemMaterial.addOreDictItem(1028, "rodBasalz");
-		dustBasalz = itemMaterial.addOreDictItem(1029, "dustBasalz");
+		rodBlizz = itemMaterial.addOreDictItem(1024, "thermalfoundation", "rodBlizz");
+		dustBlizz = itemMaterial.addOreDictItem(1025, "thermalfoundation", "dustBlizz");
+		rodBlitz = itemMaterial.addOreDictItem(1026, "thermalfoundation", "rodBlitz");
+		dustBlitz = itemMaterial.addOreDictItem(1027, "thermalfoundation", "dustBlitz");
+		rodBasalz = itemMaterial.addOreDictItem(1028, "thermalfoundation", "rodBasalz");
+		dustBasalz = itemMaterial.addOreDictItem(1029, "thermalfoundation", "dustBasalz");
 
 		/* Equipment */
 		Equipment.preInit();
@@ -140,19 +140,19 @@ public class TFItems {
 
 	public static void initialize() {
 
-		ingotIron = new ItemStack(Items.iron_ingot);
-		ingotGold = new ItemStack(Items.gold_ingot);
-		nuggetGold = new ItemStack(Items.gold_nugget);
+		ingotIron = new ItemStack(Items.IRON_INGOT);
+		ingotGold = new ItemStack(Items.GOLD_INGOT);
+		nuggetGold = new ItemStack(Items.GOLD_NUGGET);
 
-		BucketHandler.registerBucket(TFBlocks.blockFluidRedstone, 0, bucketRedstone);
-		BucketHandler.registerBucket(TFBlocks.blockFluidGlowstone, 0, bucketGlowstone);
-		BucketHandler.registerBucket(TFBlocks.blockFluidEnder, 0, bucketEnder);
-		BucketHandler.registerBucket(TFBlocks.blockFluidPyrotheum, 0, bucketPyrotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidCryotheum, 0, bucketCryotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidAerotheum, 0, bucketAerotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidPetrotheum, 0, bucketPetrotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidMana, 0, bucketMana);
-		BucketHandler.registerBucket(TFBlocks.blockFluidCoal, 0, bucketCoal);
+		BucketHandler.registerBucket(TFBlocks.blockFluidRedstone.getDefaultState(), bucketRedstone);
+		BucketHandler.registerBucket(TFBlocks.blockFluidGlowstone.getDefaultState(), bucketGlowstone);
+		BucketHandler.registerBucket(TFBlocks.blockFluidEnder.getDefaultState(), bucketEnder);
+		BucketHandler.registerBucket(TFBlocks.blockFluidPyrotheum.getDefaultState(), bucketPyrotheum);
+		BucketHandler.registerBucket(TFBlocks.blockFluidCryotheum.getDefaultState(), bucketCryotheum);
+		BucketHandler.registerBucket(TFBlocks.blockFluidAerotheum.getDefaultState(), bucketAerotheum);
+		BucketHandler.registerBucket(TFBlocks.blockFluidPetrotheum.getDefaultState(), bucketPetrotheum);
+		BucketHandler.registerBucket(TFBlocks.blockFluidMana.getDefaultState(), bucketMana);
+		BucketHandler.registerBucket(TFBlocks.blockFluidCoal.getDefaultState(), bucketCoal);
 
 		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidRedstone, bucketRedstone, FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidGlowstone, bucketGlowstone, FluidContainerRegistry.EMPTY_BUCKET);
@@ -170,16 +170,16 @@ public class TFItems {
 
 	public static void postInit() {
 
-		ItemHelper.addRecipe(ShapedRecipe(lexicon, new Object[] { " D ", "GBI", " R ", 'D', Items.diamond, 'G', "ingotGold", 'B', Items.book, 'I', "ingotIron",
+		ItemHelper.addRecipe(ShapedRecipe(lexicon, new Object[] { " D ", "GBI", " R ", 'D', Items.DIAMOND, 'G', "ingotGold", 'B', Items.BOOK, 'I', "ingotIron",
 				'R', "dustRedstone" }));
 
 		// @formatter: off
 		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustPyrotheum, 2), new Object[] { "dustCoal", "dustSulfur", "dustRedstone",
-				Items.blaze_powder }));
-		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustCryotheum, 2), new Object[] { Items.snowball, "dustSaltpeter", "dustRedstone",
+				Items.BLAZE_POWDER }));
+		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustCryotheum, 2), new Object[] { Items.SNOWBALL, "dustSaltpeter", "dustRedstone",
 				"dustBlizz" }));
 		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustAerotheum, 2), new Object[] { "sand", "dustSaltpeter", "dustRedstone", "dustBlitz" }));
-		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustPetrotheum, 2), new Object[] { Items.clay_ball, "dustObsidian", "dustRedstone",
+		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustPetrotheum, 2), new Object[] { Items.CLAY_BALL, "dustObsidian", "dustRedstone",
 				"dustBasalz" }));
 		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustBlizz, 2), "rodBlizz"));
 		ItemHelper.addRecipe(ShapelessRecipe(ItemHelper.cloneStack(dustBlitz, 2), "rodBlitz"));

@@ -1,12 +1,14 @@
 package cofh.thermalfoundation.block;
 
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.lib.util.helpers.StringHelper;
-
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.lib.util.helpers.StringHelper;
 
 public class ItemBlockStorage extends ItemBlock {
 
@@ -26,19 +28,24 @@ public class ItemBlockStorage extends ItemBlock {
 	@Override
 	public String getUnlocalizedName(ItemStack item) {
 
-		return "tile.thermalfoundation.storage." + BlockStorage.NAMES[item.getItemDamage()] + ".name";
+		return super.getUnlocalizedName(item) + BlockStorage.EnumType.getTypeFromMeta(item.getItemDamage()).getName();
 	}
 
 	@Override
-	public int getMetadata(int i) {
+	public int getMetadata(int damage) {
 
-		return i;
+		return damage;
 	}
 
 	@Override
 	public EnumRarity getRarity(ItemStack stack) {
 
-		return EnumRarity.values()[BlockStorage.RARITY[ItemHelper.getItemDamage(stack)]];
+		return EnumRarity.values()[BlockStorage.EnumType.getTypeFromMeta(stack.getItemDamage()).getRarity()];
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void registertexture() {
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(this, 0, new ModelResourceLocation(this.getUnlocalizedName().substring(5), "inventory"));
 	}
 
 }

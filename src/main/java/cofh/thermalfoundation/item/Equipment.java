@@ -2,6 +2,18 @@ package cofh.thermalfoundation.item;
 
 import static cofh.lib.util.helpers.ItemHelper.ShapedRecipe;
 
+import java.util.Locale;
+
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.item.ItemArmorAdv;
 import cofh.core.item.tool.ItemAxeAdv;
 import cofh.core.item.tool.ItemBowAdv;
@@ -14,25 +26,15 @@ import cofh.core.item.tool.ItemSickleAdv;
 import cofh.core.item.tool.ItemSwordAdv;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.core.TFProps;
-import cpw.mods.fml.common.registry.GameRegistry;
-
-import java.util.Locale;
-
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.EnumHelper;
 
 public enum Equipment {
 
 	// @formatter:off
-	/* Name, Level, Uses, Speed, Damage, Ench, Dura, Absorption */
-	Copper(      1,  175,  4.0F,  0.75F,    6,    6, new int[] { 1, 3, 3, 1 }),
-	Tin(         1,  200,  4.5F,   1.0F,    7,    8, new int[] { 1, 4, 3, 1 }),
-	Silver(      2,  200,  6.0F,   1.5F,   20,   11, new int[] { 2, 4, 4, 1 }),
-	Lead(        1,  150,    5F,   1.0F,    9,   15, new int[] { 2, 5, 4, 3 }) {
+	/* Name, Level, Uses, Speed, Damage, Ench, Dura, Absorption, Toughness */
+	Copper(      1,  175,  4.0F,  0.75F,    6,    6, new int[] { 1, 3, 3, 1 },  4.0F),
+	Tin(         1,  200,  4.5F,   1.0F,    7,    8, new int[] { 1, 4, 3, 1 },  4.5F),
+	Silver(      2,  200,  6.0F,   1.5F,   20,   11, new int[] { 2, 4, 4, 1 },  6.0F),
+	Lead(        1,  150,  5.0F,   1.0F,    9,   15, new int[] { 2, 5, 4, 3 },  5.0F) {
 
 		@Override
 		protected final void createArmor() {
@@ -42,31 +44,31 @@ public enum Equipment {
 
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, 0);
+			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD);
 			itemHelmet.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemHelmet.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, 1);
+			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST);
 			itemPlate.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemPlate.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, 2);
+			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS);
 			itemLegs.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemLegs.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, 3);
+			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET);
 			itemBoots.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemBoots.putAttribute("generic.movementSpeed", movementBonus);
 		}
 	},
-	Nickel(      2,  300,  6.5F,   2.5F,   18,   15, new int[] { 2, 5, 5, 2 }),
-	Electrum(    0,  100, 14.0F,   0.5F,   30,    8, new int[] { 2, 4, 4, 2 }),
-	Invar(       2,  450,  7.0F,   3.0F,   16,   21, new int[] { 2, 7, 5, 2 }),
-	Bronze(      2,  500,  6.0F,   2.0F,   15,   18, new int[] { 3, 6, 6, 2 }),
-	Platinum(    4, 1700,  9.0F,   4.0F,    9,   40, new int[] { 3, 8, 6, 3 }) {
+	Nickel(      2,  300,  6.5F,   2.5F,   18,   15, new int[] { 2, 5, 5, 2 },  6.5F),
+	Electrum(    0,  100, 14.0F,   0.5F,   30,    8, new int[] { 2, 4, 4, 2 }, 14.0F),
+	Invar(       2,  450,  7.0F,   3.0F,   16,   21, new int[] { 2, 7, 5, 2 },  7.0F),
+	Bronze(      2,  500,  6.0F,   2.0F,   15,   18, new int[] { 3, 6, 6, 2 },  6.0F),
+	Platinum(    4, 1700,  9.0F,   4.0F,    9,   40, new int[] { 3, 8, 6, 3 },  9.0F) {
 
 		@Override
 		protected final void createArmor() {
@@ -76,22 +78,22 @@ public enum Equipment {
 
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .20, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, 0);
+			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD);
 			itemHelmet.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemHelmet.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, 1);
+			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST);
 			itemPlate.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemPlate.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, 2);
+			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS);
 			itemLegs.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemLegs.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .20, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, 3);
+			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET);
 			itemBoots.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemBoots.putAttribute("generic.movementSpeed", movementBonus);
 		}
@@ -141,10 +143,10 @@ public enum Equipment {
 	public ItemStack toolSickle;
 	public ItemStack toolBow;
 
-	private Equipment(int level, int uses, float speed, float damage, int enchant, int durability, int[] absorb) {
+	private Equipment(int level, int uses, float speed, float damage, int enchant, int durability, int[] absorb, float toughness) {
 
 		TOOL_MATERIAL = EnumHelper.addToolMaterial("TF:" + name().toUpperCase(Locale.US), level, uses, speed, damage, enchant);
-		ARMOR_MATERIAL = EnumHelper.addArmorMaterial("TF:" + name().toUpperCase(Locale.US), durability, absorb, enchant);
+		ARMOR_MATERIAL = EnumHelper.addArmorMaterial("TF:" + name().toUpperCase(Locale.US),"TF:" + name().toUpperCase(Locale.US), durability, absorb, enchant, SoundEvent.REGISTRY.getObject(new ResourceLocation("item.armor.equip_generic")), toughness);
 		ingot = "ingot" + name();
 
 		/* Fishing Rod */
@@ -158,10 +160,10 @@ public enum Equipment {
 
 	protected void createArmor() {
 
-		itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, 0);
-		itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, 1);
-		itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, 2);
-		itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, 3);
+		itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD);
+		itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST);
+		itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS);
+		itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET);
 	}
 
 	protected void createTools() {
@@ -180,9 +182,8 @@ public enum Equipment {
 	protected void preInitv() {
 
 		final String NAME = name();
-		final String TYPE = NAME.toLowerCase(Locale.US);
-		final String ARMOR = "thermalfoundation.armor." + TYPE;
-		final String TOOL = "thermalfoundation.tool." + TYPE;
+		final String ARMOR = "thermalfoundation:armor" + NAME;
+		final String TOOL = "thermalfoundation:tool" + NAME;
 
 		String category = "Equipment." + NAME;
 		enableArmor = ThermalFoundation.config.get(category, "Armor", true);
@@ -202,97 +203,66 @@ public enum Equipment {
 		for (int i = 0; i < enableTools.length; i++) {
 			enableTools[i] &= !TFProps.disableAllTools;
 		}
-
-		final String PATH_ARMOR = "thermalfoundation:textures/" + "armor/";
-		final String[] TEXTURE = { PATH_ARMOR + NAME + "_1.png", PATH_ARMOR + NAME + "_2.png" };
-		final String ARMOR_PATH = "thermalfoundation:armor/" + TYPE + "/" + NAME;
-		final String TOOL_PATH = "thermalfoundation:tool/" + TYPE + "/" + NAME;
+		
 
 		createArmor();
-		itemHelmet.setRepairIngot(ingot).setArmorTextures(TEXTURE).setUnlocalizedName(ARMOR + "Helmet");
-		itemHelmet.setTextureName(ARMOR_PATH + "Helmet").setCreativeTab(ThermalFoundation.tabArmor);
-		itemHelmet.setShowInCreative(enableArmor | TFProps.showDisabledEquipment);
-		itemPlate.setRepairIngot(ingot).setArmorTextures(TEXTURE).setUnlocalizedName(ARMOR + "Plate");
-		itemPlate.setTextureName(ARMOR_PATH + "Chestplate").setCreativeTab(ThermalFoundation.tabArmor);
-		itemPlate.setShowInCreative(enableArmor | TFProps.showDisabledEquipment);
-		itemLegs.setRepairIngot(ingot).setArmorTextures(TEXTURE).setUnlocalizedName(ARMOR + "Legs");
-		itemLegs.setTextureName(ARMOR_PATH + "Legs").setCreativeTab(ThermalFoundation.tabArmor);
-		itemLegs.setShowInCreative(enableArmor | TFProps.showDisabledEquipment);
-		itemBoots.setRepairIngot(ingot).setArmorTextures(TEXTURE).setUnlocalizedName(ARMOR + "Boots");
-		itemBoots.setTextureName(ARMOR_PATH + "Boots").setCreativeTab(ThermalFoundation.tabArmor);
-		itemBoots.setShowInCreative(enableArmor | TFProps.showDisabledEquipment);
+		itemHelmet.setRepairIngot(ingot).setShowInCreative(enableArmor | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabArmor).setUnlocalizedName(ARMOR + "Helmet");
+		itemPlate.setRepairIngot(ingot).setShowInCreative(enableArmor | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabArmor).setUnlocalizedName(ARMOR + "Plate");
+		itemLegs.setRepairIngot(ingot).setShowInCreative(enableArmor | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabArmor).setUnlocalizedName(ARMOR + "Legs");;
+		itemBoots.setRepairIngot(ingot).setShowInCreative(enableArmor | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabArmor).setUnlocalizedName(ARMOR + "Boots");
 
 		createTools();
-		itemSword.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Sword");
-		itemSword.setTextureName(TOOL_PATH + "Sword").setCreativeTab(ThermalFoundation.tabTools);
-		itemSword.setShowInCreative(enableTools[0] | TFProps.showDisabledEquipment);
+		itemSword.setRepairIngot(ingot).setShowInCreative(enableTools[0] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Sword");
+		itemShovel.setRepairIngot(ingot).setShowInCreative(enableTools[1] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Shovel");
+		itemPickaxe.setRepairIngot(ingot).setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Pickaxe");
+		itemAxe.setRepairIngot(ingot).setShowInCreative(enableTools[3] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Axe");
+		itemHoe.setRepairIngot(ingot).setShowInCreative(enableTools[4] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Hoe");
+		itemShears.setRepairIngot(ingot).setShowInCreative(enableTools[5] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Shears");
+		itemFishingRod.setRepairIngot(ingot).setShowInCreative(enableTools[6] | TFProps.showDisabledEquipment).setLuckModifier(luckModifier).setSpeedModifier(speedModifier).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "FishingRod");
+		itemSickle.setRepairIngot(ingot).setShowInCreative(enableTools[7] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Sickle");
 
-		itemShovel.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Shovel");
-		itemShovel.setTextureName(TOOL_PATH + "Shovel").setCreativeTab(ThermalFoundation.tabTools);
-		itemShovel.setShowInCreative(enableTools[1] | TFProps.showDisabledEquipment);
+		itemBow.setRepairIngot(ingot).setShowInCreative(enableTools[8] | TFProps.showDisabledEquipment).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Bow");
 
-		itemPickaxe.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Pickaxe");
-		itemPickaxe.setTextureName(TOOL_PATH + "Pickaxe").setCreativeTab(ThermalFoundation.tabTools);
-		itemPickaxe.setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment);
+		GameRegistry.register(itemHelmet);
+		GameRegistry.register(itemPlate);
+		GameRegistry.register(itemLegs);
+		GameRegistry.register(itemBoots);
 
-		itemAxe.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Axe");
-		itemAxe.setTextureName(TOOL_PATH + "Axe").setCreativeTab(ThermalFoundation.tabTools);
-		itemAxe.setShowInCreative(enableTools[3] | TFProps.showDisabledEquipment);
-
-		itemHoe.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Hoe");
-		itemHoe.setTextureName(TOOL_PATH + "Hoe").setCreativeTab(ThermalFoundation.tabTools);
-		itemHoe.setShowInCreative(enableTools[4] | TFProps.showDisabledEquipment);
-
-		itemShears.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Shears");
-		itemShears.setTextureName(TOOL_PATH + "Shears").setCreativeTab(ThermalFoundation.tabTools);
-		itemShears.setShowInCreative(enableTools[5] | TFProps.showDisabledEquipment);
-
-		itemFishingRod.setRepairIngot(ingot).setUnlocalizedName(TOOL + "FishingRod");
-		itemFishingRod.setTextureName(TOOL_PATH + "FishingRod").setCreativeTab(ThermalFoundation.tabTools);
-		itemFishingRod.setLuckModifier(luckModifier).setSpeedModifier(speedModifier);
-		itemFishingRod.setShowInCreative(enableTools[6] | TFProps.showDisabledEquipment);
-
-		itemSickle.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Sickle");
-		itemSickle.setTextureName(TOOL_PATH + "Sickle").setCreativeTab(ThermalFoundation.tabTools);
-		itemSickle.setShowInCreative(enableTools[7] | TFProps.showDisabledEquipment);
-
-		itemBow.setRepairIngot(ingot).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setUnlocalizedName(TOOL + "Bow");
-		itemBow.setTextureName(TOOL_PATH + "Bow").setCreativeTab(ThermalFoundation.tabTools);
-		itemBow.setShowInCreative(enableTools[8] | TFProps.showDisabledEquipment);
-
-		GameRegistry.registerItem(itemHelmet, "armor.helmet" + NAME);
-		GameRegistry.registerItem(itemPlate, "armor.plate" + NAME);
-		GameRegistry.registerItem(itemLegs, "armor.legs" + NAME);
-		GameRegistry.registerItem(itemBoots, "armor.boots" + NAME);
-
-		GameRegistry.registerItem(itemSword, "tool.sword" + NAME);
-		GameRegistry.registerItem(itemShovel, "tool.shovel" + NAME);
-		GameRegistry.registerItem(itemPickaxe, "tool.pickaxe" + NAME);
-		GameRegistry.registerItem(itemAxe, "tool.axe" + NAME);
-		GameRegistry.registerItem(itemHoe, "tool.hoe" + NAME);
-		GameRegistry.registerItem(itemShears, "tool.shears" + NAME);
-		GameRegistry.registerItem(itemFishingRod, "tool.fishingRod" + NAME);
-		GameRegistry.registerItem(itemSickle, "tool.sickle" + NAME);
-		GameRegistry.registerItem(itemBow, "tool.bow" + NAME);
+		GameRegistry.register(itemSword);
+		GameRegistry.register(itemShovel);
+		GameRegistry.register(itemPickaxe);
+		GameRegistry.register(itemAxe);
+		GameRegistry.register(itemHoe);
+		GameRegistry.register(itemShears);
+		GameRegistry.register(itemFishingRod);
+		GameRegistry.register(itemSickle);
+		GameRegistry.register(itemBow);
 
 	}
 
 	protected void initializev() {
 
-		final String NAME = name();
-
 		// Armor
+		itemHelmet.registertexture();
+		itemPlate.registertexture();
+		itemLegs.registertexture();
+		itemBoots.registertexture();
+		
 		armorHelmet = new ItemStack(itemHelmet);
 		armorPlate = new ItemStack(itemPlate);
 		armorLegs = new ItemStack(itemLegs);
 		armorBoots = new ItemStack(itemBoots);
-
-		GameRegistry.registerCustomItemStack("armor" + NAME + "Helmet", armorHelmet);
-		GameRegistry.registerCustomItemStack("armor" + NAME + "Plate", armorPlate);
-		GameRegistry.registerCustomItemStack("armor" + NAME + "Legs", armorLegs);
-		GameRegistry.registerCustomItemStack("armor" + NAME + "Boots", armorBoots);
-
 		// Tools
+		itemSword.registertexture();;
+		itemShovel.registertexture();;
+		itemPickaxe.registertexture();;
+		itemAxe.registertexture();;
+		itemHoe.registertexture();;
+		itemShears.registertexture();;
+		itemFishingRod.registertexture();;
+		itemSickle.registertexture();;
+		itemBow.registertexture();;
+		
 		toolSword = new ItemStack(itemSword);
 		toolShovel = new ItemStack(itemShovel);
 		toolPickaxe = new ItemStack(itemPickaxe);
@@ -302,16 +272,6 @@ public enum Equipment {
 		toolFishingRod = new ItemStack(itemFishingRod);
 		toolSickle = new ItemStack(itemSickle);
 		toolBow = new ItemStack(itemBow);
-
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Sword", toolSword);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Shovel", toolShovel);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Pickaxe", toolPickaxe);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Axe", toolAxe);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Hoe", toolHoe);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Shears", toolShears);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "FishingRod", toolFishingRod);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Sickle", toolSickle);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Bow", toolBow);
 	}
 
 	protected void postInitv() {
@@ -344,13 +304,13 @@ public enum Equipment {
 			GameRegistry.addRecipe(ShapedRecipe(toolShears, new Object[] { " I", "I ", 'I', ingot }));
 		}
 		if (enableTools[6]) {
-			GameRegistry.addRecipe(ShapedRecipe(toolFishingRod, new Object[] { "  I", " I#", "S #", 'I', ingot, 'S', "stickWood", '#', Items.string }));
+			GameRegistry.addRecipe(ShapedRecipe(toolFishingRod, new Object[] { "  I", " I#", "S #", 'I', ingot, 'S', "stickWood", '#', Items.STRING }));
 		}
 		if (enableTools[7]) {
 			GameRegistry.addRecipe(ShapedRecipe(toolSickle, new Object[] { " I ", "  I", "SI ", 'I', ingot, 'S', "stickWood" }));
 		}
 		if (enableTools[8]) {
-			GameRegistry.addRecipe(ShapedRecipe(toolBow, new Object[] { " I#", "S #", " I#", 'I', ingot, 'S', "stickWood", '#', Items.string }));
+			GameRegistry.addRecipe(ShapedRecipe(toolBow, new Object[] { " I#", "S #", " I#", 'I', ingot, 'S', "stickWood", '#', Items.STRING }));
 		}
 	}
 

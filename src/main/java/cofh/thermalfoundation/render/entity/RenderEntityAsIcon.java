@@ -1,16 +1,15 @@
 package cofh.thermalfoundation.render.entity;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class RenderEntityAsIcon extends Render {
+public class RenderEntityAsIcon implements IRenderFactory<Entity> {
 
 	IIcon icon;
 	ResourceLocation location = TextureMap.locationItemsTexture;

@@ -1,12 +1,5 @@
 package cofh.thermalfoundation.util;
 
-import cofh.core.CoFHProps;
-import cofh.core.util.oredict.OreDictionaryArbiter;
-import cofh.lib.inventory.ComparableItemStackSafe;
-import cofh.lib.util.ItemWrapper;
-import cofh.lib.util.helpers.ItemHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,6 +13,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
+import cofh.core.CoFHProps;
+import cofh.core.util.oredict.OreDictionaryArbiter;
+import cofh.lib.inventory.ComparableItemStackSafe;
+import cofh.lib.util.ItemWrapper;
+import cofh.lib.util.helpers.ItemHelper;
+import cofh.thermalfoundation.ThermalFoundation;
 
 public class LexiconManager {
 
@@ -59,7 +58,6 @@ public class LexiconManager {
 		sortOreNames();
 	}
 
-	@SuppressWarnings("resource")
 	public static void generateList() {
 
 		theList = isWhitelist ? new File(CoFHProps.configDir, "/cofh/thermalfoundation/lexicon-whitelist.cfg") : new File(CoFHProps.configDir,
@@ -192,7 +190,7 @@ public class LexiconManager {
 
 			if (lexicon.hasKey(oreName)) {
 				ItemStack retStack = ItemStack.loadItemStackFromNBT(lexicon.getCompoundTag(oreName));
-				if (ItemHelper.isOreNameEqual(retStack, oreName)) {
+				if (ItemHelper.isOreNameEqual(retStack, new String[] {oreName})) {
 					return ItemHelper.cloneStack(retStack, stack.stackSize);
 				}
 			}
@@ -213,7 +211,7 @@ public class LexiconManager {
 
 			if (lexicon.hasKey(oreName)) {
 				ItemStack retStack = ItemStack.loadItemStackFromNBT(lexicon.getCompoundTag(oreName));
-				if (ItemHelper.isOreNameEqual(retStack, oreName)) {
+				if (ItemHelper.isOreNameEqual(retStack, new String[] {oreName})) {
 					return ItemHelper.cloneStack(retStack, 1);
 				}
 			}

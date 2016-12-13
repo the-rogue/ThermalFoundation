@@ -17,8 +17,8 @@ public class DrinkHandlerPetrotheum implements ILiquidDrinkHandler {
 	public void onDrink(EntityLivingBase player) {
 
 		player.attackEntityFrom(new InternalPetrotheumDamage(), 10);
-		player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 300 * 20, 3));
-		player.addPotionEffect(new PotionEffect(Potion.resistance.id, 300 * 20, 2));
+		player.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("haste"), 300 * 20, 3));
+		player.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("resistance"), 300 * 20, 2));
 	}
 
 	protected class InternalPetrotheumDamage extends DamageSource {

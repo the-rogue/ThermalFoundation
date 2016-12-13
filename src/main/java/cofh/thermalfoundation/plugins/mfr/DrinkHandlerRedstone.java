@@ -1,13 +1,12 @@
 package cofh.thermalfoundation.plugins.mfr;
 
-import cofh.core.util.CoreUtils;
-
 import java.util.ArrayList;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-
 import powercrystals.minefactoryreloaded.api.ILiquidDrinkHandler;
+import cofh.core.util.CoreUtils;
 
 public class DrinkHandlerRedstone implements ILiquidDrinkHandler {
 
@@ -31,11 +30,11 @@ public class DrinkHandlerRedstone implements ILiquidDrinkHandler {
 		if (effect == null || effect.getIsAmbient()) {
 			return false;
 		}
-		int id = effect.getPotionID();
+		Potion potion = effect.getPotion();
 		int amplifier = Math.min(effect.getAmplifier() + 1, 3);
 		int duration = Math.min(effect.getDuration() * 2, 9600);
 
-		player.addPotionEffect(new PotionEffect(id, duration, amplifier));
+		player.addPotionEffect(new PotionEffect(potion, duration, amplifier));
 		return true;
 	}
 

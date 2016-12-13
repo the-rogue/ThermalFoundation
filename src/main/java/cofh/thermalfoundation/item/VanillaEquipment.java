@@ -2,14 +2,6 @@ package cofh.thermalfoundation.item;
 
 import static cofh.lib.util.helpers.ItemHelper.ShapedRecipe;
 
-import cofh.core.item.tool.ItemBowAdv;
-import cofh.core.item.tool.ItemFishingRodAdv;
-import cofh.core.item.tool.ItemShearsAdv;
-import cofh.core.item.tool.ItemSickleAdv;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.core.TFProps;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import java.util.Locale;
 
 import net.minecraft.init.Items;
@@ -18,6 +10,13 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import cofh.core.item.tool.ItemBowAdv;
+import cofh.core.item.tool.ItemFishingRodAdv;
+import cofh.core.item.tool.ItemShearsAdv;
+import cofh.core.item.tool.ItemSickleAdv;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.core.TFProps;
 
 public enum VanillaEquipment {
 
@@ -28,9 +27,9 @@ public enum VanillaEquipment {
     	protected void createTools() {
 
     		itemShears = new ItemShearsAdv(TOOL_MATERIAL);
-    		itemFishingRod = Items.fishing_rod;
+    		itemFishingRod = Items.FISHING_ROD;
     		itemSickle = new ItemSickleAdv(TOOL_MATERIAL);
-    		itemBow = Items.bow;
+    		itemBow = Items.BOW;
     	}
     },
     Stone(ToolMaterial.STONE, "cobblestone"),
@@ -39,13 +38,13 @@ public enum VanillaEquipment {
     	@Override
     	protected void createTools() {
 
-    		itemShears =  Items.shears;
+    		itemShears =  Items.SHEARS;
     		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL);
     		itemSickle = new ItemSickleAdv(TOOL_MATERIAL);
     		itemBow = new ItemBowAdv(TOOL_MATERIAL);
     	}
     },
-    Diamond(ToolMaterial.EMERALD, "gemDiamond"),
+    Diamond(ToolMaterial.DIAMOND, "gemDiamond"),
     Gold
 	;
 	// @formatter:on
@@ -121,55 +120,36 @@ public enum VanillaEquipment {
 			enableTools[i] &= !TFProps.disableAllTools;
 		}
 
-		final String TOOL_PATH = "thermalfoundation:tool/" + TYPE + "/" + NAME;
-
 		createTools();
 
 		if (itemShears instanceof ItemShearsAdv) {
 			ItemShearsAdv itemShears = (ItemShearsAdv) this.itemShears;
-			itemShears.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Shears");
-			itemShears.setTextureName(TOOL_PATH + "Shears").setCreativeTab(ThermalFoundation.tabTools);
-			itemShears.setShowInCreative(enableTools[0] | TFProps.showDisabledEquipment);
-			GameRegistry.registerItem(itemShears, "tool.shears" + NAME);
+			itemShears.setRepairIngot(ingot).setShowInCreative(enableTools[0] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Shears");
+			GameRegistry.register(itemShears);
 		}
 
 		if (itemFishingRod instanceof ItemFishingRodAdv) {
 			ItemFishingRodAdv itemFishingRod = (ItemFishingRodAdv) this.itemFishingRod;
-			itemFishingRod.setRepairIngot(ingot).setUnlocalizedName(TOOL + "FishingRod");
-			itemFishingRod.setTextureName(TOOL_PATH + "FishingRod").setCreativeTab(ThermalFoundation.tabTools);
-			itemFishingRod.setLuckModifier(luckModifier).setSpeedModifier(speedModifier);
-			itemFishingRod.setShowInCreative(enableTools[1] | TFProps.showDisabledEquipment);
-			GameRegistry.registerItem(itemFishingRod, "tool.fishingRod" + NAME);
+			itemFishingRod.setRepairIngot(ingot).setShowInCreative(enableTools[1] | TFProps.showDisabledEquipment).setLuckModifier(luckModifier).setSpeedModifier(speedModifier).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "FishingRod");
+			GameRegistry.register(itemFishingRod);
 		}
 
-		itemSickle.setRepairIngot(ingot).setUnlocalizedName(TOOL + "Sickle");
-		itemSickle.setTextureName(TOOL_PATH + "Sickle").setCreativeTab(ThermalFoundation.tabTools);
-		itemSickle.setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment);
-		GameRegistry.registerItem(itemSickle, "tool.sickle" + NAME);
+		itemSickle.setRepairIngot(ingot).setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Sickle");
+		GameRegistry.register(itemSickle);
 
 		if (itemBow instanceof ItemBowAdv) {
 			ItemBowAdv itemBow = (ItemBowAdv) this.itemBow;
-			itemBow.setRepairIngot(ingot).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setUnlocalizedName(TOOL + "Bow");
-			itemBow.setTextureName(TOOL_PATH + "Bow").setCreativeTab(ThermalFoundation.tabTools);
-			itemBow.setShowInCreative(enableTools[3] | TFProps.showDisabledEquipment);
-			GameRegistry.registerItem(itemBow, "tool.bow" + NAME);
+			itemBow.setRepairIngot(ingot).setShowInCreative(enableTools[3] | TFProps.showDisabledEquipment).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Bow");
+			GameRegistry.register(itemBow);
 		}
 	}
 
 	protected void initializev() {
-
-		final String NAME = name();
-
 		// Tools
 		toolShears = new ItemStack(itemShears);
 		toolFishingRod = new ItemStack(itemFishingRod);
 		toolSickle = new ItemStack(itemSickle);
 		toolBow = new ItemStack(itemBow);
-
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Shears", toolShears);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "FishingRod", toolFishingRod);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Sickle", toolSickle);
-		GameRegistry.registerCustomItemStack("tool" + NAME + "Bow", toolBow);
 	}
 
 	protected void postInitv() {
@@ -179,13 +159,13 @@ public enum VanillaEquipment {
 			GameRegistry.addRecipe(ShapedRecipe(toolShears, new Object[] { " I", "I ", 'I', ingot }));
 		}
 		if (enableTools[1]) {
-			GameRegistry.addRecipe(ShapedRecipe(toolFishingRod, new Object[] { "  I", " I#", "S #", 'I', ingot, 'S', "stickWood", '#', Items.string }));
+			GameRegistry.addRecipe(ShapedRecipe(toolFishingRod, new Object[] { "  I", " I#", "S #", 'I', ingot, 'S', "stickWood", '#', Items.STRING }));
 		}
 		if (enableTools[2]) {
 			GameRegistry.addRecipe(ShapedRecipe(toolSickle, new Object[] { " I ", "  I", "SI ", 'I', ingot, 'S', "stickWood" }));
 		}
 		if (enableTools[3]) {
-			GameRegistry.addRecipe(ShapedRecipe(toolBow, new Object[] { " I#", "S #", " I#", 'I', ingot, 'S', "stickWood", '#', Items.string }));
+			GameRegistry.addRecipe(ShapedRecipe(toolBow, new Object[] { " I#", "S #", " I#", 'I', ingot, 'S', "stickWood", '#', Items.STRING }));
 		}
 	}
 

@@ -18,7 +18,7 @@ public class DrinkHandlerCryotheum implements ILiquidDrinkHandler {
 
 		player.attackEntityFrom(new InternalCryotheumDamage(), 15);
 		player.extinguish();
-		player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 480 * 20, 0));
+		player.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("fire_resistance"), 480 * 20, 0));
 	}
 
 	protected class InternalCryotheumDamage extends DamageSource {
