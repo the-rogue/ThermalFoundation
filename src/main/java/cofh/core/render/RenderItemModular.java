@@ -1,7 +1,6 @@
 package cofh.core.render;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
 
 public class RenderItemModular implements IItemRenderer {
 

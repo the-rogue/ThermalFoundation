@@ -1,14 +1,5 @@
 package cofh.thermalfoundation.entity.projectile;
 
-import cofh.core.CoFHProps;
-import cofh.core.util.CoreUtils;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.entity.monster.EntityBlitz;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
@@ -17,8 +8,18 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.core.CoFHProps;
+import cofh.core.util.CoreUtils;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.entity.monster.EntityBlitz;
 
 public class EntityBlitzBolt extends EntityThrowable {
 
@@ -48,15 +49,15 @@ public class EntityBlitzBolt extends EntityThrowable {
 
 	protected static class PotionEffectBlitz extends PotionEffect {
 
-		public PotionEffectBlitz(int id, int duration, int amplifier, boolean isAmbient) {
+		public PotionEffectBlitz(Potion potion, int duration, int amplifier, boolean isAmbient, boolean showparticles) {
 
-			super(id, duration, amplifier, isAmbient);
+			super(potion, duration, amplifier, isAmbient, showparticles);
 			getCurativeItems().clear();
 		}
 
 		public PotionEffectBlitz(int duration, int amplifier) {
 
-			this(Potion.confusion.id, duration, amplifier, false);
+			this(Potion.REGISTRY.getObject(new ResourceLocation("nausea")), duration, amplifier, false, true);
 		}
 
 	}
@@ -87,7 +88,7 @@ public class EntityBlitzBolt extends EntityThrowable {
 	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition pos) {
+	protected void onImpact(RayTraceResult pos) {
 
 		if (ServerHelper.isServerWorld(worldObj)) {
 			if (pos.entityHit != null) {
@@ -101,7 +102,7 @@ public class EntityBlitzBolt extends EntityThrowable {
 				}
 			}
 			for (int i = 0; i < 8; i++) {
-				worldObj.spawnParticle("cloud", posX, posY, posZ, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
+				worldObj.spawnParticle(EnumParticleTypes.CLOUD, posX, posY, posZ, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
 			}
 			setDead();
 		}

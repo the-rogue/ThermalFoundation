@@ -72,7 +72,7 @@ public class BucketHandler {
 			return;
 		}
 		boolean fill = true;
-		BlockPos pos = event.getTarget().blockPos;
+		BlockPos pos = event.getTarget().getBlockPos();
 		EnumFacing side = event.getTarget().sideHit;
 
 		l: if (!current.getItem().equals(Items.BUCKET)) {

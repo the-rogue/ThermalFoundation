@@ -15,6 +15,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -36,7 +37,6 @@ public class EntityBasalz extends EntityMob {
 
 	static boolean enable = true;
 	static boolean restrictLightLevel = true;
-	static boolean useGlobalId = true;
 
 	static int spawnLightLevel = 8;
 
@@ -50,9 +50,6 @@ public class EntityBasalz extends EntityMob {
 
 		comment = "Set this to false to disable Basalzes entirely. Jerk.";
 		enable = ThermalFoundation.config.get(category, "Enable", enable, comment);
-
-		comment = "Set this to false for the Basalz to use a mod-specific ID; this removes the Spawn Egg.";
-		useGlobalId = ThermalFoundation.config.get(category, "UseGlobalId", useGlobalId, comment);
 
 		category = "Mob.Basalz.Spawn";
 
@@ -77,41 +74,28 @@ public class EntityBasalz extends EntityMob {
 		if (!enable) {
 			return;
 		}
-		if (useGlobalId) {
-			try {
-				entityId = EntityRegistry.findGlobalUniqueEntityId();
-				try {
-					EntityRegistry.registerGlobalEntityID(EntityBasalz.class, "Basalz", entityId, 0x606060, 0xB3ABA3);
-				} catch (Exception e) {
-					ThermalFoundation.log.error("Another mod is improperly using the Entity Registry. This is REALLY bad. Using a mod-specific ID instead.", e);
-					useGlobalId = false;
-				}
-			} catch (Exception e) {
-				ThermalFoundation.log.error("Error - No Global Entity IDs remaining. This is REALLY bad. Using a mod-specific ID instead.", e);
-				useGlobalId = false;
-			}
-
+		try {
+			EntityRegistry.registerModEntity(EntityBasalz.class, "Basalz", CoreUtils.getEntityId(), ThermalFoundation.instance, CoFHProps.ENTITY_TRACKING_DISTANCE, 1, true, 0x606060, 0xB3ABA3);
+		} catch (Exception e) {
+			ThermalFoundation.log.error("Another mod is improperly using the Entity Registry. This is REALLY bad. Using a mod-specific ID instead.", e);
 		}
-		if (!useGlobalId) {
-			entityId = CoreUtils.getEntityId();
-			EntityRegistry.registerModEntity(EntityBasalz.class, "Basalz", entityId, ThermalFoundation.instance, CoFHProps.ENTITY_TRACKING_DISTANCE, 1, true);
-		}
+		
 		// Add Basalz spawn to Mountain biomes
-		List<BiomeGenBase> validBiomes = new ArrayList<BiomeGenBase>(Arrays.asList(BiomeDictionary.getBiomesForType(Type.MOUNTAIN)));
+		List<Biome> validBiomes = new ArrayList<Biome>(Arrays.asList(BiomeDictionary.getBiomesForType(Type.MOUNTAIN)));
 
 		// Add Basalz spawn to Wasteland biomes
-		for (BiomeGenBase biome : BiomeDictionary.getBiomesForType(Type.WASTELAND)) {
+		for (Biome biome : BiomeDictionary.getBiomesForType(Type.WASTELAND)) {
 			if (!validBiomes.contains(biome)) {
 				validBiomes.add(biome);
 			}
 		}
 		// Remove Basalz spawn from End biomes
-		for (BiomeGenBase biome : BiomeDictionary.getBiomesForType(Type.END)) {
+		for (Biome biome : BiomeDictionary.getBiomesForType(Type.END)) {
 			if (validBiomes.contains(biome)) {
 				validBiomes.remove(biome);
 			}
 		}
-		EntityRegistry.addSpawn(EntityBasalz.class, spawnWeight, spawnMin, spawnMax, EnumCreatureType.monster, validBiomes.toArray(new BiomeGenBase[0]));
+		EntityRegistry.addSpawn(EntityBasalz.class, spawnWeight, spawnMin, spawnMax, EnumCreatureType.MONSTER, validBiomes.toArray(new Biome[0]));
 	}
 
 	/** Random offset used in floating behaviour */
@@ -138,14 +122,14 @@ public class EntityBasalz extends EntityMob {
 	protected void applyEntityAttributes() {
 
 		super.applyEntityAttributes();
-		this.getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(6.0D);
+		this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(6.0D);
 	}
 
 	@Override
 	protected void entityInit() {
 
 		super.entityInit();
-		this.dataWatcher.addObject(16, new Byte((byte) 0));
+		this.dataManager.addObject(16, new Byte((byte) 0));
 	}
 
 	@Override
@@ -305,19 +289,19 @@ public class EntityBasalz extends EntityMob {
 
 	public boolean isInAttackMode() {
 
-		return (this.dataWatcher.getWatchableObjectByte(16) & 1) != 0;
+		return (this.dataManager.getWatchableObjectByte(16) & 1) != 0;
 	}
 
 	public void setInAttackMode(boolean mode) {
 
-		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
+		byte b0 = this.dataManager.getWatchableObjectByte(16);
 
 		if (mode) {
 			b0 = (byte) (b0 | 1);
 		} else {
 			b0 &= -2;
 		}
-		this.dataWatcher.updateObject(16, Byte.valueOf(b0));
+		this.dataManager.updateObject(16, Byte.valueOf(b0));
 	}
 
 	@Override

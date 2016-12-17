@@ -1,15 +1,6 @@
 package cofh.thermalfoundation.entity.projectile;
 
-import cofh.core.CoFHProps;
-import cofh.core.util.CoreUtils;
-import cofh.lib.util.helpers.ServerHelper;
-import cofh.thermalfoundation.ThermalFoundation;
-import cofh.thermalfoundation.entity.monster.EntityBlizz;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
@@ -19,9 +10,20 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import cofh.core.CoFHProps;
+import cofh.core.util.CoreUtils;
+import cofh.lib.util.helpers.ServerHelper;
+import cofh.thermalfoundation.ThermalFoundation;
+import cofh.thermalfoundation.entity.monster.EntityBlizz;
 
 public class EntityBlizzBolt extends EntityThrowable {
 
@@ -51,15 +53,15 @@ public class EntityBlizzBolt extends EntityThrowable {
 
 	protected static class PotionEffectBlizz extends PotionEffect {
 
-		public PotionEffectBlizz(int id, int duration, int amplifier, boolean isAmbient) {
+		public PotionEffectBlizz(Potion potion, int duration, int amplifier, boolean isAmbient, boolean showparticles) {
 
-			super(id, duration, amplifier, isAmbient);
+			super(potion, duration, amplifier, isAmbient, showparticles);
 			getCurativeItems().clear();
 		}
 
 		public PotionEffectBlizz(int duration, int amplifier) {
 
-			this(Potion.moveSlowdown.id, duration, amplifier, false);
+			this(Potion.REGISTRY.getObject(new ResourceLocation("slowness")), duration, amplifier, false, true);
 		}
 
 	}
@@ -91,7 +93,7 @@ public class EntityBlizzBolt extends EntityThrowable {
 	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition pos) {
+	protected void onImpact(RayTraceResult pos) {
 
 		if (ServerHelper.isServerWorld(worldObj)) {
 			if (pos.entityHit != null) {
@@ -105,21 +107,18 @@ public class EntityBlizzBolt extends EntityThrowable {
 					}
 				}
 			} else {
-				ForgeDirection dir = ForgeDirection.getOrientation(pos.sideHit);
-				int x = pos.blockX + dir.offsetX;
-				int y = pos.blockY + dir.offsetY;
-				int z = pos.blockZ + dir.offsetZ;
+				BlockPos bpos = new BlockPos(pos.getBlockPos()).offset(pos.sideHit);
 
-				if (worldObj.isAirBlock(x, y, z)) {
-					Block block = worldObj.getBlock(x, y - 1, z);
+				if (worldObj.isAirBlock(bpos)) {
+					IBlockState block = worldObj.getBlockState(new BlockPos(bpos).add(0, -1, 0));
 
-					if (block != null && block.isSideSolid(worldObj, x, y - 1, z, ForgeDirection.UP)) {
-						worldObj.setBlock(x, y, z, Blocks.snow_layer);
+					if (block != null && block.isSideSolid(worldObj, new BlockPos(bpos).add(0, -1, 0), EnumFacing.UP)) {
+						worldObj.setBlockState(bpos, Blocks.SNOW_LAYER.getDefaultState());
 					}
 				}
 			}
 			for (int i = 0; i < 8; i++) {
-				worldObj.spawnParticle("snowballpoof", posX, posY, posZ, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
+				worldObj.spawnParticle(EnumParticleTypes.SNOWBALL, posX, posY, posZ, this.rand.nextDouble(), this.rand.nextDouble(), this.rand.nextDouble());
 			}
 			setDead();
 		}

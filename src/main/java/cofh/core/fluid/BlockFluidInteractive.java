@@ -42,6 +42,15 @@ public class BlockFluidInteractive extends BlockFluidCoFHBase implements IBakeab
 		}
 		return sucessful;
 	}
+	@SuppressWarnings("deprecation")
+	public boolean addInteraction(Block preblock, int preMinMeta, int preMaxMeta, Block postblock, int postMeta) {
+		boolean sucessful = false;
+		for (int premeta = preMinMeta; premeta < preMaxMeta; premeta++) {
+			sucessful = addInteraction(preblock.getStateFromMeta(premeta), postblock.getStateFromMeta(postMeta));
+		}
+		return sucessful;
+	}
+
 
 	public boolean hasInteraction(IBlockState state) {
 

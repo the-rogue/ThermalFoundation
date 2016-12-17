@@ -6,6 +6,8 @@ import gnu.trove.map.hash.THashMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -33,15 +35,12 @@ public class ItemBase extends Item {
 		public int rarity = 0;
 		public int maxDamage = 0;
 		public boolean altName = false;
-		public ItemBase item;
 
 		public ItemEntry(String modname, String name, int rarity, int maxDamage) {
 
 			this.name = name;
 			this.rarity = rarity;
 			this.maxDamage = maxDamage;
-			item = new ItemBase(modname);
-			item.setUnlocalizedName(name);
 		}
 
 		public ItemEntry(String modname, String name, int rarity) {
@@ -60,9 +59,6 @@ public class ItemBase extends Item {
 			this.altName = altName;
 			return this;
 		}
-		public void registertexture() {
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getUnlocalizedName().substring(5), "inventory"));
-		}
 	}
 
 	public TMap<Integer, ItemEntry> itemMap = new THashMap<Integer, ItemEntry>();
@@ -71,14 +67,11 @@ public class ItemBase extends Item {
 	public boolean hasTextures = true;
 	public String modName = "cofh";
 
-	public ItemBase() {
+	public ItemBase(@Nullable String modName) {
 
-		setHasSubtypes(true);
-	}
-
-	public ItemBase(String modName) {
-
-		this.modName = modName;
+		if (modName != null) {
+			this.modName = modName;
+		}
 		setHasSubtypes(true);
 	}
 
@@ -98,7 +91,7 @@ public class ItemBase extends Item {
 		if (register) {
 			GameRegistry.register(this, new ResourceLocation(entry.name));
 		}
-		return new ItemStack(entry.item);
+		return new ItemStack(this, 1, number);
 	}
 
 	public ItemStack addItem(int number, ItemEntry entry) {
@@ -176,9 +169,9 @@ public class ItemBase extends Item {
 		ItemEntry item = itemMap.get(i);
 
 		if (item.altName) {
-			return new StringBuilder().append(getUnlocalizedName()).append('.').append(item.name).append("Alt").toString();
+			return new StringBuilder().append(getUnlocalizedName()).append(item.name).append("Alt").toString();
 		}
-		return new StringBuilder().append("item.").append(getUnlocalizedName()).append('.').append(item.name).toString();
+		return new StringBuilder().append("item.").append(getUnlocalizedName()).append(item.name).toString();
 	}
 
 	@Override
@@ -205,23 +198,16 @@ public class ItemBase extends Item {
 		return super.setUnlocalizedName(name);
 	}
 
-	public void registertexture() {
-
-		if (!hasTextures) {
-			return;
-		}
-		for (int i = 0; i < itemList.size(); i++) {
-			ItemEntry entry = itemMap.get(i);
-			entry.registertexture();
-		}
-		
-	}
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer(ItemStack stack) {
 
 		return CoFHFontRenderer.loadFontRendererStack(stack);
+	}
+	public void registertextures() {
+		for (int i = 0; i < itemMap.size(); i++) {
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(this, i, new ModelResourceLocation(this.getUnlocalizedName(new ItemStack(this, 1, i)).substring(5), "inventory"));
+		}
 	}
 
 }

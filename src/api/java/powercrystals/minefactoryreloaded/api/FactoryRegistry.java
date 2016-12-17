@@ -1,11 +1,11 @@
 package powercrystals.minefactoryreloaded.api;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 /**
  * @author PowerCrystals

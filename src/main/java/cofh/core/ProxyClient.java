@@ -46,7 +46,6 @@ import cofh.core.gui.element.TabSecurity;
 import cofh.core.gui.element.TabTutorial;
 import cofh.core.key.CoFHKeyHandler;
 import cofh.core.render.CoFHFontRenderer;
-import cofh.core.render.IconRegistry;
 import cofh.core.render.ShaderHelper;
 import cofh.core.sided.IFunctionSided;
 import cofh.core.sided.IRunnableClient;
@@ -287,7 +286,7 @@ public class ProxyClient extends Proxy {
 	@SubscribeEvent
 	public void blockRenderBlockOverlay(RenderBlockOverlayEvent evt) {
 
-		if (evt.overlayType == OverlayType.BLOCK && !evt.blockForOverlay.isNormalCube()) {
+		if (evt.getOverlayType() == OverlayType.BLOCK && !evt.getBlockForOverlay().isNormalCube()) {
 			// occasionally the overlay code screws up and tries to overlay a block that didn't pass the checks, this fixes that
 			evt.setCanceled(true);
 		}
@@ -331,7 +330,7 @@ public class ProxyClient extends Proxy {
 
 		for (Object a : FMLClientHandler.instance().getClient().theWorld.playerEntities) {
 			EntityPlayer player = (EntityPlayer) a;
-			if (player.getCommandSenderName().toLowerCase(Locale.US).equals(playerName.toLowerCase(Locale.US))) {
+			if (player.getName().toLowerCase(Locale.US).equals(playerName.toLowerCase(Locale.US))) {
 				return player;
 			}
 		}

@@ -137,7 +137,7 @@ public class BlockFluidCryotheum extends BlockFluidInteractive {
 			BlockPos pos2 = new BlockPos(pos).add(0, densityDir, 0);
 			IBlockState blockstate = world.getBlockState(pos2);
 
-			if (blockstate.getBlock() == this && blockstate.getBlock().getMetaFromState(state) != 0) {
+			if (blockstate.getBlock() == this && blockstate.getBlock().getMetaFromState(blockstate) != 0) {
 				world.setBlockState(pos2, this.getDefaultState(), 3);
 				world.setBlockToAir(pos);
 				return;

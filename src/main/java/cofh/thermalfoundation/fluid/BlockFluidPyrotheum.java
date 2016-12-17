@@ -6,10 +6,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -43,20 +49,20 @@ public class BlockFluidPyrotheum extends BlockFluidInteractive {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, "FluidPyrotheum");
+		GameRegistry.register(this, new ResourceLocation("FluidPyrotheum"));
 
-		addInteraction(Blocks.cobblestone, Blocks.stone);
-		addInteraction(Blocks.grass, Blocks.dirt);
-		addInteraction(Blocks.sand, Blocks.glass);
-		addInteraction(Blocks.water, Blocks.stone);
-		addInteraction(Blocks.flowing_water, Blocks.stone);
-		addInteraction(Blocks.clay, Blocks.hardened_clay);
-		addInteraction(Blocks.ice, Blocks.stone);
-		addInteraction(Blocks.snow, Blocks.air);
-		addInteraction(Blocks.snow_layer, Blocks.air);
+		addInteraction(Blocks.COBBLESTONE.getDefaultState(), Blocks.STONE.getDefaultState());
+		addInteraction(Blocks.GRASS.getDefaultState(), Blocks.DIRT.getDefaultState());
+		addInteraction(Blocks.SAND.getDefaultState(), Blocks.GLASS.getDefaultState());
+		addInteraction(Blocks.WATER.getDefaultState(), Blocks.STONE.getDefaultState());
+		addInteraction(Blocks.FLOWING_WATER.getDefaultState(), Blocks.STONE.getDefaultState());
+		addInteraction(Blocks.CLAY.getDefaultState(), Blocks.HARDENED_CLAY.getDefaultState());
+		addInteraction(Blocks.ICE.getDefaultState(), Blocks.STONE.getDefaultState());
+		addInteraction(Blocks.SNOW.getDefaultState(), Blocks.AIR.getDefaultState());
+		addInteraction(Blocks.SNOW_LAYER.getDefaultState(), Blocks.AIR.getDefaultState());
 
 		for (int i = 0; i < 8; i++) {
-			addInteraction(Blocks.stone_stairs, i, Blocks.stone_brick_stairs, i);
+			addInteraction(Blocks.STONE_STAIRS, i, i, Blocks.STONE_BRICK_STAIRS, i);
 		}
 
 		String category = "Fluid.Pyrotheum";
@@ -70,7 +76,7 @@ public class BlockFluidPyrotheum extends BlockFluidInteractive {
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
 
 		if (!effect) {
 			return;
@@ -81,107 +87,102 @@ public class BlockFluidPyrotheum extends BlockFluidInteractive {
 		if (entity instanceof EntityPlayer) {
 
 		} else if (entity instanceof EntityCreeper) {
-			world.createExplosion(entity, entity.posX, entity.posY, entity.posZ, 6.0F, entity.worldObj.getGameRules().getGameRuleBooleanValue("mobGriefing"));
+			world.createExplosion(entity, entity.posX, entity.posY, entity.posZ, 6.0F, entity.worldObj.getGameRules().getBoolean("mobGriefing"));
 			entity.setDead();
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+	public int getLightValue(IBlockState state) {
 
 		return TFFluids.fluidPyrotheum.getLuminosity();
 	}
 
 	@Override
-	public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	public int getFireSpreadSpeed(IBlockAccess world, BlockPos pos, EnumFacing face) {
 
 		return effect ? 800 : 0;
 	}
 
 	@Override
-	public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	public int getFlammability(IBlockAccess world, BlockPos pos, EnumFacing face) {
 
 		return 0;
 	}
 
 	@Override
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+	public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face) {
 
-		return effect && face.ordinal() > ForgeDirection.UP.ordinal() && world.getBlock(x, y - 1, z) != this;
+		return effect && face.ordinal() > EnumFacing.UP.ordinal() && world.getBlockState(new BlockPos(pos).add(0, -1, 0)).getBlock() != this;
 	}
 
 	@Override
-	public boolean isFireSource(World world, int x, int y, int z, ForgeDirection side) {
+	public boolean isFireSource(World world, BlockPos pos, EnumFacing side) {
 
 		return effect;
 	}
 
 	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand) {
+	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
 
 		if (effect) {
-			checkForInteraction(world, x, y, z);
+			checkForInteraction(world, pos);
 		}
-		if (enableSourceFall && world.getBlockMetadata(x, y, z) == 0) {
-			Block block = world.getBlock(x, y + densityDir, z);
-			int bMeta = world.getBlockMetadata(x, y + densityDir, z);
+		if (enableSourceFall && state.getBlock().getMetaFromState(world.getBlockState(pos)) == 0) {
+			BlockPos pos2 = new BlockPos(pos).add(0, densityDir, 0);
+			IBlockState blockstate = world.getBlockState(pos2);
 
-			if (block == this && bMeta != 0 || block.isFlammable(world, x, y + densityDir, z, ForgeDirection.UP)) {
-				world.setBlock(x, y + densityDir, z, this, 0, 3);
-				world.setBlockToAir(x, y, z);
+			if (blockstate.getBlock() == this && blockstate.getBlock().getMetaFromState(blockstate) != 0 || blockstate.getBlock().isFlammable(world, pos2, EnumFacing.UP)) {
+				world.setBlockState(pos2, this.getDefaultState(), 3);
+				world.setBlockToAir(pos);
 				return;
 			}
 		}
-		super.updateTick(world, x, y, z, rand);
+		super.updateTick(world, pos, state, rand);
 	}
 
-	protected void checkForInteraction(World world, int x, int y, int z) {
+	protected void checkForInteraction(World world, BlockPos pos) {
 
-		if (world.getBlock(x, y, z) != this) {
+		if (world.getBlockState(pos).getBlock() != this) {
 			return;
 		}
-		int x2 = x;
-		int y2 = y;
-		int z2 = z;
 
 		for (int i = 0; i < 6; i++) {
-			x2 = x + BlockHelper.SIDE_COORD_MOD[i][0];
-			y2 = y + BlockHelper.SIDE_COORD_MOD[i][1];
-			z2 = z + BlockHelper.SIDE_COORD_MOD[i][2];
+			BlockPos pos2 = new BlockPos(pos).add(BlockHelper.SIDE_COORD_MOD[i][0], BlockHelper.SIDE_COORD_MOD[i][1], BlockHelper.SIDE_COORD_MOD[i][2]);
 
-			interactWithBlock(world, x2, y2, z2);
+			interactWithBlock(world, pos2);
 		}
-		interactWithBlock(world, x - 1, y, z - 1);
-		interactWithBlock(world, x - 1, y, z + 1);
-		interactWithBlock(world, x + 1, y, z - 1);
-		interactWithBlock(world, x + 1, y, z + 1);
+		interactWithBlock(world, new BlockPos(pos).add(-1, 0, -1));
+		interactWithBlock(world, new BlockPos(pos).add(-1, 0, 1));
+		interactWithBlock(world, new BlockPos(pos).add(1, 0, -1));
+		interactWithBlock(world, new BlockPos(pos).add(1, 0, 1));
 	}
 
-	protected void interactWithBlock(World world, int x, int y, int z) {
+	protected void interactWithBlock(World world, BlockPos pos) {
 
-		Block block = world.getBlock(x, y, z);
+		Block block = world.getBlockState(pos).getBlock();
 
-		if (block == Blocks.air || block == this) {
+		if (block == Blocks.AIR || block == this) {
 			return;
 		}
-		int bMeta = world.getBlockMetadata(x, y, z);
+		IBlockState state = world.getBlockState(pos);
 		BlockWrapper result;
 
-		if (hasInteraction(block, bMeta)) {
-			result = getInteraction(block, bMeta);
-			world.setBlock(x, y, z, result.block, result.metadata, 3);
-			triggerInteractionEffects(world, x, y, z);
-		} else if (block.isFlammable(world, x, y, z, ForgeDirection.UP)) {
-			world.setBlock(x, y, z, Blocks.fire);
-		} else if (world.isSideSolid(x, y, z, ForgeDirection.UP) && world.isAirBlock(x, y + 1, z)) {
-			world.setBlock(x, y + 1, z, Blocks.fire, 0, 3);
+		if (hasInteraction(state)) {
+			result = getInteraction(state);
+			world.setBlockState(pos, result.blockstate, 3);
+			triggerInteractionEffects(world, pos);
+		} else if (block.isFlammable(world, pos, EnumFacing.UP)) {
+			world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+		} else if (world.isSideSolid(pos, EnumFacing.UP) && world.isAirBlock(new BlockPos(pos).add(0, 1, 0))) {
+			world.setBlockState(new BlockPos(pos).add(0, 1, 0), Blocks.FIRE.getDefaultState(), 3);
 		}
 	}
 
-	protected void triggerInteractionEffects(World world, int x, int y, int z) {
+	protected void triggerInteractionEffects(World world, BlockPos pos) {
 
 		if (random.nextInt(16) == 0) {
-			world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F, 2.2F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+			world.playSound(null, new BlockPos(pos).add(0.5F, 0.5F, 0.5F), SoundEvent.REGISTRY.getObject(new ResourceLocation("block.fire.extinguish")), SoundCategory.BLOCKS, 0.5F, 2.2F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 		}
 	}
 

@@ -92,7 +92,6 @@ public class GuiFriendsList extends GuiBaseAdv {
 		tbName.setEnableBackgroundDrawing(false);
 
 		// Setup Text Area
-
 		taFriendsList = new GuiTextList(this.fontRendererObj, taflX, taflY, 128, 10);
 		taFriendsList.textLines = RegistrySocial.clientPlayerFriends;
 		taFriendsList.drawBackground = false;

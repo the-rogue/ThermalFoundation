@@ -1,79 +1,79 @@
 package cofh.thermalfoundation.render.entity;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class RenderEntityAsIcon implements IRenderFactory<Entity> {
+public class RenderEntityAsIcon extends Render<EntityThrowable> {
 
-	IIcon icon;
-	ResourceLocation location = TextureMap.locationItemsTexture;
+	ResourceLocation location;
+	ItemStack textureitem;
 
-	public RenderEntityAsIcon() {
 
-	}
+	public RenderEntityAsIcon(RenderManager manager, ResourceLocation location) {
 
-	public RenderEntityAsIcon(IIcon icon) {
-
-		this.icon = icon;
-	}
-
-	public RenderEntityAsIcon(IIcon icon, ResourceLocation location) {
-
-		this.icon = icon;
+		super(manager);
 		this.location = location;
 	}
-
-	public RenderEntityAsIcon setIcon(IIcon icon) {
-
-		this.icon = icon;
+	public RenderEntityAsIcon setTextureItem(ItemStack textureitem) {
+		this.textureitem = textureitem;
 		return this;
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float p_76986_9_) {
-
-		if (icon != null) {
-			GL11.glPushMatrix();
-			GL11.glTranslatef((float) x, (float) y, (float) z);
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-			GL11.glScalef(0.5F, 0.5F, 0.5F);
-			this.bindEntityTexture(entity);
-			this.renderIcon(Tessellator.instance, icon);
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-			GL11.glPopMatrix();
-		}
+	public void doRender(EntityThrowable entity, double x, double y, double z, float entityYaw, float partialTicks) {
+		GL11.glPushMatrix();
+		GL11.glTranslatef((float) x, (float) y, (float) z);
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GL11.glScalef(0.5F, 0.5F, 0.5F);
+		this.bindEntityTexture(entity);
+		this.renderIcon(entity);
+		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		GL11.glPopMatrix();
+		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
-
+	protected ResourceLocation getEntityTexture(EntityThrowable entity) {
+		
 		return location;
 	}
 
-	private void renderIcon(Tessellator p_77026_1_, IIcon p_77026_2_) {
+	private void renderIcon(EntityThrowable entity) {
 
-		float f = p_77026_2_.getMinU();
-		float f1 = p_77026_2_.getMaxU();
-		float f2 = p_77026_2_.getMinV();
-		float f3 = p_77026_2_.getMaxV();
-		float f4 = 1.0F;
-		float f5 = 0.5F;
-		float f6 = 0.25F;
-		GL11.glRotatef(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-		p_77026_1_.startDrawingQuads();
-		p_77026_1_.setNormal(0.0F, 1.0F, 0.0F);
-		p_77026_1_.addVertexWithUV(0.0F - f5, 0.0F - f6, 0.0D, f, f3);
-		p_77026_1_.addVertexWithUV(f4 - f5, 0.0F - f6, 0.0D, f1, f3);
-		p_77026_1_.addVertexWithUV(f4 - f5, f4 - f6, 0.0D, f1, f2);
-		p_77026_1_.addVertexWithUV(0.0F - f5, f4 - f6, 0.0D, f, f2);
-		p_77026_1_.draw();
+		TextureAtlasSprite textureatlassprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(textureitem.getItem(), textureitem.getMetadata());
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        float f = textureatlassprite.getMinU();
+        float f1 = textureatlassprite.getMaxU();
+        float f2 = textureatlassprite.getMinV();
+        float f3 = textureatlassprite.getMaxV();
+        GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float)(this.renderManager.options.thirdPersonView == 2 ? -1 : 1) * -this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+
+        if (this.renderOutlines)
+        {
+            GlStateManager.enableColorMaterial();
+            GlStateManager.enableOutlineMode(this.getTeamColor(entity));
+        }
+
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        vertexbuffer.pos(-0.5D, -0.25D, 0.0D).tex((double)f, (double)f3).normal(0.0F, 1.0F, 0.0F).endVertex();
+        vertexbuffer.pos(0.5D, -0.25D, 0.0D).tex((double)f1, (double)f3).normal(0.0F, 1.0F, 0.0F).endVertex();
+        vertexbuffer.pos(0.5D, 0.75D, 0.0D).tex((double)f1, (double)f2).normal(0.0F, 1.0F, 0.0F).endVertex();
+        vertexbuffer.pos(-0.5D, 0.75D, 0.0D).tex((double)f, (double)f2).normal(0.0F, 1.0F, 0.0F).endVertex();
+        tessellator.draw();
 	}
 
 }

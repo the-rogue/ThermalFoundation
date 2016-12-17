@@ -1,14 +1,12 @@
 package cofh.core.render;
 
-import cofh.lib.util.ItemWrapper;
-
 import gnu.trove.map.hash.THashMap;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
+import cofh.lib.util.ItemWrapper;
 
 public class ItemRenderRegistry {
 

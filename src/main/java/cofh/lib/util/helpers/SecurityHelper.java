@@ -34,7 +34,6 @@ public class SecurityHelper {
 	public static final GameProfile UNKNOWN_GAME_PROFILE = new GameProfile(UUID.fromString("1ef1a6f0-87bc-4e78-0a0b-c6824eb787ea"), "[None]");
 	private static boolean setup = false;
 
-	@SuppressWarnings("unchecked")
 	public static void setup() {
 
 		if (setup) {

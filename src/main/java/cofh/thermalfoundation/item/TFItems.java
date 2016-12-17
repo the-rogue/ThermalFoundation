@@ -2,14 +2,18 @@ package cofh.thermalfoundation.item;
 
 import static cofh.lib.util.helpers.ItemHelper.ShapedRecipe;
 import static cofh.lib.util.helpers.ItemHelper.ShapelessRecipe;
+
+import java.util.ArrayList;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import cofh.core.item.IItemIterable;
 import cofh.core.item.ItemBase;
-import cofh.core.item.ItemBucket;
+import cofh.core.item.ItemBucketCoFH;
 import cofh.core.util.energy.FurnaceFuelHandler;
-import cofh.core.util.fluid.BucketHandler;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.block.TFBlocks;
@@ -18,22 +22,28 @@ import cofh.thermalfoundation.fluid.TFFluids;
 
 @SuppressWarnings("deprecation")
 public class TFItems {
-
+	
+	public static final ArrayList<IItemIterable<?>> ITEMS = new ArrayList<IItemIterable<?>>();
+	
 	public static void preInit() {
 
+		
 		itemLexicon = (ItemLexicon) new ItemLexicon("lexicon");
-		itemBucket = (ItemBucket) new ItemBucket("thermalfoundation").setUnlocalizedName("bucket").setCreativeTab(ThermalFoundation.tabCommon);
 		itemMaterial = (ItemBase) new ItemBase("thermalfoundation").setUnlocalizedName("material").setCreativeTab(ThermalFoundation.tabCommon);
-
-		bucketRedstone = itemBucket.addOreDictItem(0, "thermalfoundation", "bucketRedstone", 1);
-		bucketGlowstone = itemBucket.addOreDictItem(1, "thermalfoundation", "bucketGlowstone", 1);
-		bucketEnder = itemBucket.addOreDictItem(2, "thermalfoundation", "bucketEnder", 1);
-		bucketPyrotheum = itemBucket.addOreDictItem(3, "thermalfoundation", "bucketPyrotheum", 2);
-		bucketCryotheum = itemBucket.addOreDictItem(4, "thermalfoundation", "bucketCryotheum", 2);
-		bucketAerotheum = itemBucket.addOreDictItem(7, "thermalfoundation", "bucketAerotheum", 2);
-		bucketPetrotheum = itemBucket.addOreDictItem(8, "thermalfoundation", "bucketPetrotheum", 2);
-		bucketMana = itemBucket.addItem(5, "thermalfoundation", "bucketMana", 3);
-		bucketCoal = itemBucket.addOreDictItem(6, "thermalfoundation", "bucketCoal");
+		
+		ITEMS.add(bucketRedstone = new ItemBucketCoFH(TFBlocks.blockFluidRedstone, "thermalfoundation", "bucketRedstone", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketGlowstone = new ItemBucketCoFH(TFBlocks.blockFluidGlowstone, "thermalfoundation", "bucketGlowstone", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketEnder = new ItemBucketCoFH(TFBlocks.blockFluidEnder, "thermalfoundation", "bucketEnder", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketPyrotheum = new ItemBucketCoFH(TFBlocks.blockFluidPyrotheum, "thermalfoundation", "bucketPyrotheum", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketCryotheum = new ItemBucketCoFH(TFBlocks.blockFluidCryotheum, "thermalfoundation", "bucketCryotheum", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketAerotheum = new ItemBucketCoFH(TFBlocks.blockFluidAerotheum, "thermalfoundation", "bucketAerotheum", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketPetrotheum = new ItemBucketCoFH(TFBlocks.blockFluidPetrotheum, "thermalfoundation", "bucketPetrotheum", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketMana = new ItemBucketCoFH(TFBlocks.blockFluidMana, "thermalfoundation", "bucketMana", ThermalFoundation.tabCommon));
+		ITEMS.add(bucketCoal = new ItemBucketCoFH(TFBlocks.blockFluidCoal, "thermalfoundation", "bucketCoal", ThermalFoundation.tabCommon));
+		
+		for (IItemIterable<?> item : ITEMS) {
+			GameRegistry.register(item);
+		}
 
 		lexicon = new ItemStack(itemLexicon);
 		itemLexicon.setEmpoweredState(lexicon, false);
@@ -123,7 +133,7 @@ public class TFItems {
 		dustAerotheum = itemMaterial.addOreDictItem(514, "thermalfoundation", "dustAerotheum", 2);
 		dustPetrotheum = itemMaterial.addOreDictItem(515, "thermalfoundation", "dustPetrotheum", 2);
 		dustMana = itemMaterial.addItem(516, "thermalfoundation", "dustMana", 3);
-
+		
 		FurnaceFuelHandler.registerFuel(dustPyrotheum, TFProps.dustPyrotheumFuel);
 
 		/* Mob Drops */
@@ -144,25 +154,15 @@ public class TFItems {
 		ingotGold = new ItemStack(Items.GOLD_INGOT);
 		nuggetGold = new ItemStack(Items.GOLD_NUGGET);
 
-		BucketHandler.registerBucket(TFBlocks.blockFluidRedstone.getDefaultState(), bucketRedstone);
-		BucketHandler.registerBucket(TFBlocks.blockFluidGlowstone.getDefaultState(), bucketGlowstone);
-		BucketHandler.registerBucket(TFBlocks.blockFluidEnder.getDefaultState(), bucketEnder);
-		BucketHandler.registerBucket(TFBlocks.blockFluidPyrotheum.getDefaultState(), bucketPyrotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidCryotheum.getDefaultState(), bucketCryotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidAerotheum.getDefaultState(), bucketAerotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidPetrotheum.getDefaultState(), bucketPetrotheum);
-		BucketHandler.registerBucket(TFBlocks.blockFluidMana.getDefaultState(), bucketMana);
-		BucketHandler.registerBucket(TFBlocks.blockFluidCoal.getDefaultState(), bucketCoal);
-
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidRedstone, bucketRedstone, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidGlowstone, bucketGlowstone, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidEnder, bucketEnder, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidPyrotheum, bucketPyrotheum, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidCryotheum, bucketCryotheum, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidAerotheum, bucketAerotheum, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidPetrotheum, bucketPetrotheum, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidMana, bucketMana, FluidContainerRegistry.EMPTY_BUCKET);
-		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidCoal, bucketCoal, FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidRedstone, new ItemStack(bucketRedstone), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidGlowstone, new ItemStack(bucketGlowstone), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidEnder, new ItemStack(bucketEnder), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidPyrotheum, new ItemStack(bucketPyrotheum), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidCryotheum, new ItemStack(bucketCryotheum), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidAerotheum, new ItemStack(bucketAerotheum), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidPetrotheum, new ItemStack(bucketPetrotheum), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidMana, new ItemStack(bucketMana), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(TFFluids.fluidCoal, new ItemStack(bucketCoal), FluidContainerRegistry.EMPTY_BUCKET);
 
 		/* Equipment */
 		Equipment.initialize();
@@ -267,19 +267,18 @@ public class TFItems {
 		Equipment.postInit();
 	}
 
-	public static ItemBucket itemBucket;
 	public static ItemLexicon itemLexicon;
 	public static ItemBase itemMaterial;
 
-	public static ItemStack bucketRedstone;
-	public static ItemStack bucketGlowstone;
-	public static ItemStack bucketEnder;
-	public static ItemStack bucketPyrotheum;
-	public static ItemStack bucketCryotheum;
-	public static ItemStack bucketAerotheum;
-	public static ItemStack bucketPetrotheum;
-	public static ItemStack bucketMana;
-	public static ItemStack bucketCoal;
+	public static ItemBucketCoFH bucketRedstone;
+	public static ItemBucketCoFH bucketGlowstone;
+	public static ItemBucketCoFH bucketEnder;
+	public static ItemBucketCoFH bucketPyrotheum;
+	public static ItemBucketCoFH bucketCryotheum;
+	public static ItemBucketCoFH bucketAerotheum;
+	public static ItemBucketCoFH bucketPetrotheum;
+	public static ItemBucketCoFH bucketMana;
+	public static ItemBucketCoFH bucketCoal;
 
 	public static ItemStack lexicon;
 

@@ -6,12 +6,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidInteractive;
@@ -45,12 +49,12 @@ public class BlockFluidPetrotheum extends BlockFluidInteractive {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.registerBlock(this, "FluidPetrotheum");
+		GameRegistry.register(this, new ResourceLocation("FluidPetrotheum"));
 
-		addInteraction(Blocks.stone, Blocks.gravel);
-		addInteraction(Blocks.cobblestone, Blocks.gravel);
-		addInteraction(Blocks.stonebrick, Blocks.gravel);
-		addInteraction(Blocks.mossy_cobblestone, Blocks.gravel);
+		addInteraction(Blocks.STONE.getDefaultState(), Blocks.GRAVEL.getDefaultState());
+		addInteraction(Blocks.COBBLESTONE.getDefaultState(), Blocks.GRAVEL.getDefaultState());
+		addInteraction(Blocks.STONEBRICK.getDefaultState(), Blocks.GRAVEL.getDefaultState());
+		addInteraction(Blocks.MOSSY_COBBLESTONE.getDefaultState(), Blocks.GRAVEL.getDefaultState());
 
 		String category = "Fluid.Petrotheum";
 		String comment = "Enable this for Fluid Petrotheum to break apart stone blocks.";
@@ -66,7 +70,7 @@ public class BlockFluidPetrotheum extends BlockFluidInteractive {
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
 
 		if (!effect) {
 			return;
@@ -78,75 +82,70 @@ public class BlockFluidPetrotheum extends BlockFluidInteractive {
 			return;
 		}
 		if (world.getTotalWorldTime() % 8 == 0 && entity instanceof EntityLivingBase && !((EntityLivingBase) entity).isEntityUndead()) {
-			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.digSpeed.id, 30 * 20, 2));
-			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.nightVision.id, 30 * 20, 0));
-			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.resistance.id, 30 * 20, 1));
+			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.REGISTRY.getObject(new ResourceLocation("haste")), 30 * 20, 2));
+			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.REGISTRY.getObject(new ResourceLocation("night_vision")), 30 * 20, 0));
+			((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.REGISTRY.getObject(new ResourceLocation("resistance")), 30 * 20, 1));
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z) {
+	public int getLightValue(IBlockState state) {
 
 		return TFFluids.fluidPetrotheum.getLuminosity();
 	}
 
 	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand) {
+	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
 
 		if (effect) {
-			checkForInteraction(world, x, y, z);
+			checkForInteraction(world, pos);
 		}
-		if (enableSourceFall && world.getBlockMetadata(x, y, z) == 0) {
-			Block block = world.getBlock(x, y + densityDir, z);
-			int bMeta = world.getBlockMetadata(x, y + densityDir, z);
+		if (enableSourceFall && state.getBlock().getMetaFromState(world.getBlockState(pos)) == 0) {
+			BlockPos pos2 = new BlockPos(pos).add(0, densityDir, 0);
+			IBlockState blockstate = world.getBlockState(pos2);
 
-			if (block == this && bMeta != 0) {
-				world.setBlock(x, y + densityDir, z, this, 0, 3);
-				world.setBlockToAir(x, y, z);
+			if (blockstate.getBlock() == this && blockstate.getBlock().getMetaFromState(blockstate) != 0) {
+				world.setBlockState(pos2, this.getDefaultState(), 3);
+				world.setBlockToAir(pos);
 				return;
 			}
 		}
-		super.updateTick(world, x, y, z, rand);
+		super.updateTick(world, pos, state, rand);
 	}
 
-	protected void checkForInteraction(World world, int x, int y, int z) {
+	protected void checkForInteraction(World world, BlockPos pos) {
 
-		if (world.getBlock(x, y, z) != this) {
+		if (world.getBlockState(pos).getBlock() != this) {
 			return;
 		}
-		int x2 = x;
-		int y2 = y;
-		int z2 = z;
 
 		for (int i = 2; i < 6; i++) {
-			x2 = x + BlockHelper.SIDE_COORD_MOD[i][0];
-			y2 = y + BlockHelper.SIDE_COORD_MOD[i][1];
-			z2 = z + BlockHelper.SIDE_COORD_MOD[i][2];
-			interactWithBlock(world, x2, y2, z2);
+			BlockPos pos2 = new BlockPos(pos).add(BlockHelper.SIDE_COORD_MOD[i][0], BlockHelper.SIDE_COORD_MOD[i][1], BlockHelper.SIDE_COORD_MOD[i][2]);
+			interactWithBlock(world, pos2);
 		}
 	}
 
-	protected void interactWithBlock(World world, int x, int y, int z) {
+	protected void interactWithBlock(World world, BlockPos pos) {
 
-		Block block = world.getBlock(x, y, z);
+		Block block = world.getBlockState(pos).getBlock();
 
-		if (block == Blocks.air || block == this) {
+		if (block == Blocks.AIR || block == this) {
 			return;
 		}
-		int bMeta = world.getBlockMetadata(x, y, z);
-		if (extreme && block.getMaterial() == Material.rock && block.getBlockHardness(world, x, y, z) > 0) {
-			block.dropBlockAsItem(world, x, y, z, bMeta, 0);
-			world.setBlockToAir(x, y, z);
-			triggerInteractionEffects(world, x, y, z);
-		} else if (hasInteraction(block, bMeta)) {
-			BlockWrapper result = getInteraction(block, bMeta);
-			world.setBlock(x, y, z, result.block, result.metadata, 3);
+		IBlockState state = world.getBlockState(pos);
+		if (extreme && state.getMaterial() == Material.ROCK && state.getBlockHardness(world, pos) > 0) {
+			block.dropBlockAsItem(world, pos, state, 0);
+			world.setBlockToAir(pos);
+			triggerInteractionEffects(world, pos);
+		} else if (hasInteraction(state)) {
+			BlockWrapper result = getInteraction(state);
+			world.setBlockState(pos, result.blockstate, 3);
 		}
 	}
 
-	protected void triggerInteractionEffects(World world, int x, int y, int z) {
+	protected void triggerInteractionEffects(World world, BlockPos pos) {
 
-		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "dig.stone", 0.5F, 0.9F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F);
+		world.playSound(null, new BlockPos(pos).add(0.5F, 0.5F, 0.5F), SoundEvent.REGISTRY.getObject(new ResourceLocation("block.stone.break")), SoundCategory.BLOCKS, 0.5F, 0.9F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F);
 	}
 
 }
