@@ -4,15 +4,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -22,17 +32,16 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.core.CoFHProps;
-import cofh.core.entity.EntitySelectorInRangeByType;
+import cofh.core.entity.ai.EntityAINearestPlayerOrOther;
 import cofh.core.util.CoreUtils;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.lib.util.helpers.MathHelper;
-import cofh.lib.util.helpers.ServerHelper;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.entity.projectile.EntityBasalzBolt;
 import cofh.thermalfoundation.item.TFItems;
 
 public class EntityBasalz extends EntityMob {
-
+    
 	static int entityId = -1;
 
 	static boolean enable = true;
@@ -97,18 +106,19 @@ public class EntityBasalz extends EntityMob {
 		}
 		EntityRegistry.addSpawn(EntityBasalz.class, spawnWeight, spawnMin, spawnMax, EnumCreatureType.MONSTER, validBiomes.toArray(new Biome[0]));
 	}
-
+	
+	private static final DataParameter<Boolean> IS_IN_ATTACK_MODE = EntityDataManager.<Boolean>createKey(EntityBasalz.class, DataSerializers.BOOLEAN);
+	
 	/** Random offset used in floating behaviour */
 	protected float heightOffset = 0.5F;
 
 	/** ticks until heightOffset is randomized */
 	protected int heightOffsetUpdateTime;
-	protected int firingState;
 
-	public static final String SOUND_AMBIENT = CoreUtils.getSoundName(ThermalFoundation.modId, "mobBasalzAmbient");
-	public static final String SOUND_ATTACK = CoreUtils.getSoundName(ThermalFoundation.modId, "mobBasalzAttack");
-	public static final String SOUND_LIVING[] = { CoreUtils.getSoundName(ThermalFoundation.modId, "mobBasalzBreathe0"),
-			CoreUtils.getSoundName(ThermalFoundation.modId, "mobBasalzBreathe1") };
+	public static final SoundEvent SOUND_AMBIENT = CoreUtils.createSound(ThermalFoundation.modId, "mobBasalzAmbient");
+	public static final SoundEvent SOUND_ATTACK = CoreUtils.createSound(ThermalFoundation.modId, "mobBasalzAttack");
+	public static final SoundEvent SOUND_LIVING[] = { CoreUtils.createSound(ThermalFoundation.modId, "mobBasalzBreathe0"),
+			CoreUtils.createSound(ThermalFoundation.modId, "mobBasalzBreathe1") };
 
 	protected static final int SOUND_AMBIENT_FREQUENCY = 400; // How often it does ambient sound loop
 
@@ -117,23 +127,36 @@ public class EntityBasalz extends EntityMob {
 		super(world);
 		this.experienceValue = 10;
 	}
-
+	
+    protected void initEntityAI()
+    {
+        this.tasks.addTask(4, new EntityBasalz.AIBoltAttack(this));
+        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
+        this.tasks.addTask(7, new EntityAIWander(this, 1.0D));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
+        this.targetTasks.addTask(2, new EntityAINearestPlayerOrOther<EntityVillager>(this, EntityVillager.class, true));
+    }
+    
 	@Override
 	protected void applyEntityAttributes() {
 
 		super.applyEntityAttributes();
 		this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(6.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(48.0D);
 	}
 
 	@Override
 	protected void entityInit() {
 
 		super.entityInit();
-		this.dataManager.addObject(16, new Byte((byte) 0));
+		this.dataManager.register(IS_IN_ATTACK_MODE, Boolean.valueOf(false));
 	}
 
 	@Override
-	protected String getLivingSound() {
+	protected SoundEvent getAmbientSound() {
 
 		return SOUND_LIVING[this.rand.nextInt(2)];
 	}
@@ -166,109 +189,48 @@ public class EntityBasalz extends EntityMob {
 	@Override
 	public void onLivingUpdate() {
 
-		if (ServerHelper.isServerWorld(worldObj)) {
-			--this.heightOffsetUpdateTime;
+        if (!this.onGround && this.motionY < 0.0D)
+        {
+            this.motionY *= 0.6D;
+        }
 
-			if (this.heightOffsetUpdateTime <= 0) {
-				this.heightOffsetUpdateTime = 100;
-				this.heightOffset = 0.5F + (float) this.rand.nextGaussian() * 3.0F;
-			}
-			Entity target = this.getEntityToAttack();
-			if (target != null) {
-				if ((target.posY + target.getEyeHeight()) > (this.posY + this.getEyeHeight() + this.heightOffset)) {
-					this.motionY += (0.30000001192092896D - this.motionY) * 0.30000001192092896D;
-				}
-			}
-		}
-		if (this.rand.nextInt(SOUND_AMBIENT_FREQUENCY) == 0) {
-			this.worldObj.playSoundEffect(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D, SOUND_AMBIENT, this.rand.nextFloat() * 0.2F + 0.1F,
-					this.rand.nextFloat() * 0.3F + 0.4F);
-		}
-		if (!this.onGround && this.motionY < 0.0D) {
-			this.motionY *= 0.6D;
-		}
-		for (int i = 0; i < 2; i++) {
-			this.worldObj.spawnParticle("townaura", this.posX + (this.rand.nextDouble() - 0.5D) * this.width, this.posY + this.rand.nextDouble()
-					* (this.height * 0.2D), this.posZ + (this.rand.nextDouble() - 0.5D) * this.width, 0.0D, 0.0D, 0.0D);
-		}
-		super.onLivingUpdate();
+        if (this.worldObj.isRemote)
+        {
+            if (this.rand.nextInt(SOUND_AMBIENT_FREQUENCY) == 0 && !this.isSilent())
+            {
+                this.worldObj.playSound(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D, SOUND_AMBIENT, this.getSoundCategory(), 1.0F + this.rand.nextFloat() * 0.2F + 0.1F, this.rand.nextFloat() * 0.3F + 0.4F, false);
+            }
+
+            for (int i = 0; i < 2; ++i)
+            {
+                this.worldObj.spawnParticle(EnumParticleTypes.TOWN_AURA, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)(this.height * 0.2D), this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, 0.0D, 0.0D, 0.0D, new int[0]);
+            }
+        }
+        super.onLivingUpdate();
 	}
 
-	/**
-	 * Finds the closest player within 16 blocks to attack, or null if this Entity isn't interested in attacking (Animals, Spiders at day, peaceful PigZombies).
-	 */
-	@Override
-	protected Entity findPlayerToAttack() {
+    protected void updateAITasks()
+    {
+        --this.heightOffsetUpdateTime;
 
-		EntityPlayer player = this.worldObj.getClosestVulnerablePlayerToEntity(this, 16.0D);
-		if (player != null && this.canEntityBeSeen(player)) {
-			return player;
-		}
-		return getClosestVictim(16.0D);
-	}
+        if (this.heightOffsetUpdateTime <= 0)
+        {
+            this.heightOffsetUpdateTime = 100;
+            this.heightOffset = 0.5F + (float)this.rand.nextGaussian() * 3.0F;
+        }
 
-	public Entity getClosestVictim(double dist) {
+        EntityLivingBase entitylivingbase = this.getAttackTarget();
 
-		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.posX - dist, this.posY - dist, this.posZ - dist, this.posX + dist, this.posY + dist, this.posZ
-				+ dist);
-		EntitySelectorInRangeByType entsel = new EntitySelectorInRangeByType(this, dist, EntityVillager.class);
-		// TODO: should this target INpc instead?
-		List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, aabb, entsel);
-		if (entities.isEmpty()) {
-			return null;
-		}
-		Entity victim = null;
-		double closest = Double.MAX_VALUE;
-		for (Entity entity : entities) {
-			double distVsq = this.getDistanceSqToEntity(entity);
-			if (distVsq < closest) {
-				closest = distVsq;
-				victim = entity;
-			}
-		}
-		return victim;
-	}
+        if (entitylivingbase != null && entitylivingbase.posY + (double)entitylivingbase.getEyeHeight() > this.posY + (double)this.getEyeHeight() + (double)this.heightOffset)
+        {
+            this.motionY += (0.30000001192092896D - this.motionY) * 0.30000001192092896D;
+            this.isAirBorne = true;
+        }
+        super.updateAITasks();
+    }
 
 	@Override
-	protected void attackEntity(Entity target, float distance) {
-
-		// Melee distance
-		if (this.attackTime <= 0 && distance < 2.0F && target.boundingBox.maxY > this.boundingBox.minY && target.boundingBox.minY < this.boundingBox.maxY) {
-			this.attackTime = 20;
-			this.attackEntityAsMob(target);
-		}
-		// Within range (30)
-		else if (distance < 30.0F) {
-			double dX = target.posX - this.posX;
-			double dZ = target.posZ - this.posZ;
-
-			if (this.attackTime == 0) {
-				++this.firingState;
-
-				if (this.firingState == 1) {
-					this.attackTime = 60;
-					this.setInAttackMode(true); // Flary goodness :D
-				} else if (this.firingState <= 4) {
-					this.attackTime = 6;
-				} else {
-					this.attackTime = 80; // 100
-					this.firingState = 0;
-					this.setInAttackMode(false); // Unflary sadness :(
-				}
-				if (this.firingState > 1) {
-					EntityBasalzBolt bolt = new EntityBasalzBolt(this.worldObj, this);
-					bolt.posY = this.posY + this.height / 2.0F + 0.5D;
-					this.playSound(SOUND_ATTACK, 2.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-					this.worldObj.spawnEntityInWorld(bolt);
-				}
-			}
-			this.rotationYaw = (float) (Math.atan2(dZ, dX) * 180.0D / Math.PI) - 90.0F;
-			this.hasAttacked = true;
-		}
-	}
-
-	@Override
-	protected void fall(float distance) {
+	public void fall(float distance, float damageMultiplier) {
 
 	}
 
@@ -289,19 +251,12 @@ public class EntityBasalz extends EntityMob {
 
 	public boolean isInAttackMode() {
 
-		return (this.dataManager.getWatchableObjectByte(16) & 1) != 0;
+		return ((Boolean)this.dataManager.get(IS_IN_ATTACK_MODE)).booleanValue();
 	}
 
 	public void setInAttackMode(boolean mode) {
-
-		byte b0 = this.dataManager.getWatchableObjectByte(16);
-
-		if (mode) {
-			b0 = (byte) (b0 | 1);
-		} else {
-			b0 &= -2;
-		}
-		this.dataManager.updateObject(16, Byte.valueOf(b0));
+		
+		this.dataManager.set(IS_IN_ATTACK_MODE, Boolean.valueOf(mode));
 	}
 
 	@Override
@@ -310,23 +265,123 @@ public class EntityBasalz extends EntityMob {
 		if (!restrictLightLevel) {
 			return true;
 		}
-		int i = MathHelper.floor(this.posX);
-		int j = MathHelper.floor(this.boundingBox.minY);
-		int k = MathHelper.floor(this.posZ);
+		
+		BlockPos pos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-		if (this.worldObj.getSavedLightValue(EnumSkyBlock.Sky, i, j, k) > this.rand.nextInt(32)) {
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, pos) > this.rand.nextInt(32)) {
 			return false;
 		} else {
-			int l = this.worldObj.getBlockLightValue(i, j, k);
+			int l = this.worldObj.getLightFromNeighbors(pos);
 
 			if (this.worldObj.isThundering()) {
 				int i1 = this.worldObj.skylightSubtracted;
 				this.worldObj.skylightSubtracted = 10;
-				l = this.worldObj.getBlockLightValue(i, j, k);
+				l = this.worldObj.getLightFromNeighbors(pos);
 				this.worldObj.skylightSubtracted = i1;
 			}
 			return l <= this.rand.nextInt(spawnLightLevel);
 		}
 	}
+	
+	static class AIBoltAttack extends EntityAIBase
+    {
+        private final EntityBasalz basalz;
+        private int firingState;
+        private int attackTime;
+
+        public AIBoltAttack(EntityBasalz basalz)
+        {
+            this.basalz = basalz;
+            this.setMutexBits(3);
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute()
+        {
+            EntityLivingBase entitylivingbase = this.basalz.getAttackTarget();
+            return entitylivingbase != null && entitylivingbase.isEntityAlive();
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void startExecuting()
+        {
+            this.firingState = 0;
+        }
+
+        /**
+         * Resets the task
+         */
+        public void resetTask()
+        {
+            this.basalz.setInAttackMode(false);
+        }
+
+        /**
+         * Updates the task
+         */
+        public void updateTask()
+        {
+            --this.attackTime;
+            EntityLivingBase entitylivingbase = this.basalz.getAttackTarget();
+            double d0 = this.basalz.getDistanceSqToEntity(entitylivingbase);
+
+            if (d0 < 4.0D)
+            {
+                if (this.attackTime <= 0)
+                {
+                    this.attackTime = 20;
+                    this.basalz.attackEntityAsMob(entitylivingbase);
+                }
+
+                this.basalz.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
+            }
+            else if (d0 < 256.0D)
+            {
+
+                if (this.attackTime <= 0)
+                {
+                    ++this.firingState;
+
+                    if (this.firingState == 1)
+                    {
+                        this.attackTime = 60;
+                        this.basalz.setInAttackMode(true);
+                    }
+                    else if (this.firingState <= 4)
+                    {
+                        this.attackTime = 6;
+                    }
+                    else
+                    {
+                        this.attackTime = 80;
+                        this.firingState = 0;
+                        this.basalz.setInAttackMode(false);
+                    }
+
+                    if (this.firingState > 1)
+                    {
+                        this.basalz.playSound(SOUND_ATTACK, 2.0F, (this.basalz.rand.nextFloat() - this.basalz.rand.nextFloat()) * 0.2F + 1.0F);
+                        for (int i = 0; i < 1; ++i)
+                        {
+                        	EntityBasalzBolt bolt = new EntityBasalzBolt(this.basalz.worldObj, this.basalz);
+                            bolt.posY = this.basalz.posY + (double)(this.basalz.height / 2.0F) + 0.5D;
+                            this.basalz.worldObj.spawnEntityInWorld(bolt);
+                        }
+                    }
+                }
+                this.basalz.getLookHelper().setLookPositionWithEntity(entitylivingbase, 10.0F, 10.0F);
+            }
+            else
+            {
+                this.basalz.getNavigator().clearPathEntity();
+                this.basalz.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
+            }
+            super.updateTask();
+        }
+    }
 
 }

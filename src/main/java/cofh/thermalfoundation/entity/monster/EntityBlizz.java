@@ -4,28 +4,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.core.CoFHProps;
-import cofh.core.entity.EntitySelectorInRangeByType;
+import cofh.core.entity.ai.EntityAINearestPlayerOrOther;
 import cofh.core.util.CoreUtils;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.lib.util.helpers.MathHelper;
-import cofh.lib.util.helpers.ServerHelper;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.entity.projectile.EntityBlizzBolt;
 import cofh.thermalfoundation.item.TFItems;
@@ -36,7 +48,6 @@ public class EntityBlizz extends EntityMob {
 
 	static boolean enable = true;
 	static boolean restrictLightLevel = true;
-	static boolean useGlobalId = true;
 
 	static int spawnLightLevel = 8;
 
@@ -50,9 +61,6 @@ public class EntityBlizz extends EntityMob {
 
 		comment = "Set this to false to disable Blizzes entirely. Jerk.";
 		enable = ThermalFoundation.config.get(category, "Enable", enable, comment);
-
-		comment = "Set this to false for the Blizz to use a mod-specific ID; this removes the Spawn Egg.";
-		useGlobalId = ThermalFoundation.config.get(category, "UseGlobalId", useGlobalId, comment);
 
 		category = "Mob.Blizz.Spawn";
 
@@ -77,54 +85,42 @@ public class EntityBlizz extends EntityMob {
 		if (!enable) {
 			return;
 		}
-		if (useGlobalId) {
-			try {
-				entityId = EntityRegistry.findGlobalUniqueEntityId();
-				try {
-					EntityRegistry.registerGlobalEntityID(EntityBlizz.class, "Blizz", entityId, 0xE0FBFF, 0x6BE6FF);
-				} catch (Exception e) {
-					ThermalFoundation.log.error("Another mod is improperly using the Entity Registry. This is REALLY bad. Using a mod-specific ID instead.", e);
-					useGlobalId = false;
-				}
-			} catch (Exception e) {
-				ThermalFoundation.log.error("Error - No Global Entity IDs remaining. This is REALLY bad. Using a mod-specific ID instead.", e);
-				useGlobalId = false;
-			}
+		try {
+			EntityRegistry.registerModEntity(EntityBlizz.class, "Blizz", CoreUtils.getEntityId(), ThermalFoundation.instance, CoFHProps.ENTITY_TRACKING_DISTANCE, 1, true, 0xE0FBFF, 0x6BE6FF);
+		} catch (Exception e) {
+			ThermalFoundation.log.error("Another mod is improperly using the Entity Registry. This is REALLY bad. Using a mod-specific ID instead.", e);
+		}
 
-		}
-		if (!useGlobalId) {
-			entityId = CoreUtils.getEntityId();
-			EntityRegistry.registerModEntity(EntityBlizz.class, "Blizz", entityId, ThermalFoundation.instance, CoFHProps.ENTITY_TRACKING_DISTANCE, 1, true);
-		}
 		// Add Blizz spawn to Cold biomes
-		List<BiomeGenBase> validBiomes = new ArrayList<BiomeGenBase>(Arrays.asList(BiomeDictionary.getBiomesForType(Type.COLD)));
+		List<Biome> validBiomes = new ArrayList<Biome>(Arrays.asList(BiomeDictionary.getBiomesForType(Type.COLD)));
 
 		// Add Blizz spawn to Snowy biomes (in vanilla, all snowy are also cold)
-		for (BiomeGenBase biome : BiomeDictionary.getBiomesForType(Type.SNOWY)) {
+		for (Biome biome : BiomeDictionary.getBiomesForType(Type.SNOWY)) {
 			if (!validBiomes.contains(biome)) {
 				validBiomes.add(biome);
 			}
 		}
 		// Remove Blizz spawn from End biomes
-		for (BiomeGenBase biome : BiomeDictionary.getBiomesForType(Type.END)) {
+		for (Biome biome : BiomeDictionary.getBiomesForType(Type.END)) {
 			if (validBiomes.contains(biome)) {
 				validBiomes.remove(biome);
 			}
 		}
-		EntityRegistry.addSpawn(EntityBlizz.class, spawnWeight, spawnMin, spawnMax, EnumCreatureType.monster, validBiomes.toArray(new BiomeGenBase[0]));
+		EntityRegistry.addSpawn(EntityBlizz.class, spawnWeight, spawnMin, spawnMax, EnumCreatureType.MONSTER, validBiomes.toArray(new Biome[0]));
 	}
+	
+	private static final DataParameter<Boolean> IS_IN_ATTACK_MODE = EntityDataManager.<Boolean>createKey(EntityBasalz.class, DataSerializers.BOOLEAN);
 
 	/** Random offset used in floating behaviour */
 	protected float heightOffset = 0.5F;
 
 	/** ticks until heightOffset is randomized */
 	protected int heightOffsetUpdateTime;
-	protected int firingState;
 
-	public static final String SOUND_AMBIENT = CoreUtils.getSoundName(ThermalFoundation.modId, "mobBlizzAmbient");
-	public static final String SOUND_ATTACK = CoreUtils.getSoundName(ThermalFoundation.modId, "mobBlizzAttack");
-	public static final String SOUND_LIVING[] = { CoreUtils.getSoundName(ThermalFoundation.modId, "mobBlizzBreathe0"),
-			CoreUtils.getSoundName(ThermalFoundation.modId, "mobBlizzBreathe1"), CoreUtils.getSoundName(ThermalFoundation.modId, "mobBlizzBreathe2") };
+	public static final SoundEvent SOUND_AMBIENT = CoreUtils.createSound(ThermalFoundation.modId, "mobBlizzAmbient");
+	public static final SoundEvent SOUND_ATTACK = CoreUtils.createSound(ThermalFoundation.modId, "mobBlizzAttack");
+	public static final SoundEvent SOUND_LIVING[] = { CoreUtils.createSound(ThermalFoundation.modId, "mobBlizzBreathe0"),
+			CoreUtils.createSound(ThermalFoundation.modId, "mobBlizzBreathe1"), CoreUtils.createSound(ThermalFoundation.modId, "mobBlizzBreathe2") };
 
 	protected static final int SOUND_AMBIENT_FREQUENCY = 400; // How often it does ambient sound loop
 
@@ -133,37 +129,50 @@ public class EntityBlizz extends EntityMob {
 		super(world);
 		this.experienceValue = 10;
 	}
+	
+    protected void initEntityAI()
+    {
+        this.tasks.addTask(4, new EntityBlizz.AIBoltAttack(this));
+        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
+        this.tasks.addTask(7, new EntityAIWander(this, 1.0D));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
+        this.targetTasks.addTask(2, new EntityAINearestPlayerOrOther<EntityBlaze>(this, EntityBlaze.class, true));
+    }
 
 	@Override
 	protected void applyEntityAttributes() {
 
 		super.applyEntityAttributes();
-		this.getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(6.0D);
+		this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(6.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(48.0D);
 	}
 
 	@Override
 	protected void entityInit() {
 
 		super.entityInit();
-		this.dataWatcher.addObject(16, new Byte((byte) 0));
+		this.dataManager.register(IS_IN_ATTACK_MODE, Boolean.valueOf(false));
 	}
 
 	@Override
-	protected String getLivingSound() {
+	protected SoundEvent getAmbientSound() {
 
 		return SOUND_LIVING[this.rand.nextInt(3)];
 	}
 
 	@Override
-	protected String getHurtSound() {
+	protected SoundEvent getHurtSound() {
 
-		return "mob.blaze.hit";
+		return SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.blaze.hurt"));
 	}
 
 	@Override
-	protected String getDeathSound() {
+	protected SoundEvent getDeathSound() {
 
-		return "mob.blaze.death";
+		return SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.blaze.death"));
 	}
 
 	@Override
@@ -182,122 +191,48 @@ public class EntityBlizz extends EntityMob {
 	@Override
 	public void onLivingUpdate() {
 
-		if (ServerHelper.isServerWorld(worldObj)) {
-			--this.heightOffsetUpdateTime;
+        if (!this.onGround && this.motionY < 0.0D)
+        {
+            this.motionY *= 0.6D;
+        }
 
-			if (this.heightOffsetUpdateTime <= 0) {
-				this.heightOffsetUpdateTime = 100;
-				this.heightOffset = 0.5F + (float) this.rand.nextGaussian() * 3.0F;
-			}
-			Entity target = this.getEntityToAttack();
-			if (target != null) {
-				if ((target.posY + target.getEyeHeight()) > (this.posY + this.getEyeHeight() + this.heightOffset)) {
-					this.motionY += (0.30000001192092896D - this.motionY) * 0.30000001192092896D;
-				}
-			}
-		}
-		if (this.rand.nextInt(SOUND_AMBIENT_FREQUENCY) == 0) {
-			this.worldObj.playSoundEffect(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D, SOUND_AMBIENT, this.rand.nextFloat() * 0.2F + 0.1F,
-					this.rand.nextFloat() * 0.3F + 0.4F);
-		}
-		if (!this.onGround && this.motionY < 0.0D) {
-			this.motionY *= 0.6D;
-		}
-		for (int i = 0; i < 2; i++) {
-			this.worldObj.spawnParticle("snowballpoof", this.posX + (this.rand.nextDouble() - 0.5D) * this.width, this.posY + this.rand.nextDouble()
-					* (this.height * 0.2D), this.posZ + (this.rand.nextDouble() - 0.5D) * this.width, 0.0D, 0.0D, 0.0D);
-		}
-		super.onLivingUpdate();
+        if (this.worldObj.isRemote)
+        {
+            if (this.rand.nextInt(SOUND_AMBIENT_FREQUENCY) == 0 && !this.isSilent())
+            {
+                this.worldObj.playSound(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D, SOUND_AMBIENT, this.getSoundCategory(), 1.0F + this.rand.nextFloat() * 0.2F + 0.1F, this.rand.nextFloat() * 0.3F + 0.4F, false);
+            }
+
+            for (int i = 0; i < 2; ++i)
+            {
+                this.worldObj.spawnParticle(EnumParticleTypes.SNOWBALL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)(this.height * 0.2D), this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, 0.0D, 0.0D, 0.0D, new int[0]);
+            }
+        }
+        super.onLivingUpdate();
 	}
 
-	/**
-	 * Finds the closest player within 16 blocks to attack, or null if this Entity isn't interested in attacking (Animals, Spiders at day, peaceful PigZombies).
-	 */
-	@Override
-	protected Entity findPlayerToAttack() {
+    protected void updateAITasks()
+    {
+        --this.heightOffsetUpdateTime;
 
-		EntityPlayer player = this.worldObj.getClosestVulnerablePlayerToEntity(this, 16.0D);
-		if (player != null && this.canEntityBeSeen(player)) {
-			return player;
-		}
-		return getClosestVictim(16.0D);
-	}
+        if (this.heightOffsetUpdateTime <= 0)
+        {
+            this.heightOffsetUpdateTime = 100;
+            this.heightOffset = 0.5F + (float)this.rand.nextGaussian() * 3.0F;
+        }
 
-	/**
-	 * Gets the closest victim to the point within the specified distance (distance can be set to less than 0 to not limit the distance). Args: x, y, z, dist
-	 */
-	public Entity getClosestVictim(double dist) {
+        EntityLivingBase entitylivingbase = this.getAttackTarget();
 
-		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(this.posX - dist, this.posY - dist, this.posZ - dist, this.posX + dist, this.posY + dist, this.posZ
-				+ dist);
-		EntitySelectorInRangeByType entsel = new EntitySelectorInRangeByType(this, dist, EntityBlaze.class);
-		List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, aabb, entsel);
-		if (entities.isEmpty()) {
-			return null;
-		}
-		Entity victim = null;
-		boolean hasBlaze = false;
-		double closest = Double.MAX_VALUE;
-
-		for (Entity entity : entities) {
-			boolean isBlaze = entity instanceof EntityBlaze;
-			// If we already have a Blaze in our sights, ignore passives
-			if (hasBlaze && !isBlaze) {
-				continue;
-			}
-			double distVsq = this.getDistanceSqToEntity(entity);
-			// Blaze distance overrides existing Animal distances
-			// Otherwise, closer is better.
-			if ((isBlaze && !hasBlaze) || (distVsq < closest)) {
-				closest = distVsq;
-				victim = entity;
-				hasBlaze |= isBlaze;
-			}
-		}
-		return victim;
-	}
+        if (entitylivingbase != null && entitylivingbase.posY + (double)entitylivingbase.getEyeHeight() > this.posY + (double)this.getEyeHeight() + (double)this.heightOffset)
+        {
+            this.motionY += (0.30000001192092896D - this.motionY) * 0.30000001192092896D;
+            this.isAirBorne = true;
+        }
+        super.updateAITasks();
+    }
 
 	@Override
-	protected void attackEntity(Entity target, float distance) {
-
-		// Melee distance
-		if (this.attackTime <= 0 && distance < 2.0F && target.boundingBox.maxY > this.boundingBox.minY && target.boundingBox.minY < this.boundingBox.maxY) {
-			this.attackTime = 20;
-			this.attackEntityAsMob(target);
-		}
-		// Within range (30)
-		else if (distance < 30.0F) {
-			double dX = target.posX - this.posX;
-			double dZ = target.posZ - this.posZ;
-
-			if (this.attackTime == 0) {
-				++this.firingState;
-
-				if (this.firingState == 1) {
-					this.attackTime = 60;
-					this.setInAttackMode(true); // Flary goodness :D
-				} else if (this.firingState <= 4) {
-					this.attackTime = 6;
-				} else {
-					this.attackTime = 80; // 100
-					this.firingState = 0;
-					this.setInAttackMode(false); // Unflary sadness :(
-				}
-				if (this.firingState > 1) {
-					EntityBlizzBolt bolt = new EntityBlizzBolt(this.worldObj, this);
-					bolt.posY = this.posY + this.height / 2.0F + 0.5D;
-					this.playSound(SOUND_ATTACK, 2.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-					this.worldObj.spawnEntityInWorld(bolt);
-				}
-				// }
-			}
-			this.rotationYaw = (float) (Math.atan2(dZ, dX) * 180.0D / Math.PI) - 90.0F;
-			this.hasAttacked = true;
-		}
-	}
-
-	@Override
-	protected void fall(float distance) {
+	public void fall(float distance, float damageMultiplier) {
 
 	}
 
@@ -307,7 +242,7 @@ public class EntityBlizz extends EntityMob {
 		if (wasHitByPlayer) {
 			int items = this.rand.nextInt(4 + looting);
 			for (int i = 0; i < items; i++) {
-				this.entityDropItem(new ItemStack(Items.snowball), 0);
+				this.entityDropItem(new ItemStack(Items.SNOWBALL), 0);
 			}
 			items = this.rand.nextInt(2 + looting);
 			for (int i = 0; i < items; i++) {
@@ -318,19 +253,12 @@ public class EntityBlizz extends EntityMob {
 
 	public boolean isInAttackMode() {
 
-		return (this.dataWatcher.getWatchableObjectByte(16) & 1) != 0;
+		return ((Boolean)this.dataManager.get(IS_IN_ATTACK_MODE)).booleanValue();
 	}
 
 	public void setInAttackMode(boolean mode) {
-
-		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
-
-		if (mode) {
-			b0 = (byte) (b0 | 1);
-		} else {
-			b0 &= -2;
-		}
-		this.dataWatcher.updateObject(16, Byte.valueOf(b0));
+		
+		this.dataManager.set(IS_IN_ATTACK_MODE, Boolean.valueOf(mode));
 	}
 
 	@Override
@@ -339,23 +267,123 @@ public class EntityBlizz extends EntityMob {
 		if (!restrictLightLevel) {
 			return true;
 		}
-		int i = MathHelper.floor(this.posX);
-		int j = MathHelper.floor(this.boundingBox.minY);
-		int k = MathHelper.floor(this.posZ);
+		
+		BlockPos pos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-		if (this.worldObj.getSavedLightValue(EnumSkyBlock.Sky, i, j, k) > this.rand.nextInt(32)) {
+		if (this.worldObj.getLightFor(EnumSkyBlock.SKY, pos) > this.rand.nextInt(32)) {
 			return false;
 		} else {
-			int l = this.worldObj.getBlockLightValue(i, j, k);
+			int l = this.worldObj.getLightFromNeighbors(pos);
 
 			if (this.worldObj.isThundering()) {
 				int i1 = this.worldObj.skylightSubtracted;
 				this.worldObj.skylightSubtracted = 10;
-				l = this.worldObj.getBlockLightValue(i, j, k);
+				l = this.worldObj.getLightFromNeighbors(pos);
 				this.worldObj.skylightSubtracted = i1;
 			}
 			return l <= this.rand.nextInt(spawnLightLevel);
 		}
 	}
 
+	static class AIBoltAttack extends EntityAIBase
+    {
+        private final EntityBlizz blizz;
+        private int firingState;
+        private int attackTime;
+
+        public AIBoltAttack(EntityBlizz blizz)
+        {
+            this.blizz = blizz;
+            this.setMutexBits(3);
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute()
+        {
+            EntityLivingBase entitylivingbase = this.blizz.getAttackTarget();
+            return entitylivingbase != null && entitylivingbase.isEntityAlive();
+        }
+
+        /**
+         * Execute a one shot task or start executing a continuous task
+         */
+        public void startExecuting()
+        {
+            this.firingState = 0;
+        }
+
+        /**
+         * Resets the task
+         */
+        public void resetTask()
+        {
+            this.blizz.setInAttackMode(false);
+        }
+
+        /**
+         * Updates the task
+         */
+        public void updateTask()
+        {
+            --this.attackTime;
+            EntityLivingBase entitylivingbase = this.blizz.getAttackTarget();
+            double d0 = this.blizz.getDistanceSqToEntity(entitylivingbase);
+
+            if (d0 < 4.0D)
+            {
+                if (this.attackTime <= 0)
+                {
+                    this.attackTime = 20;
+                    this.blizz.attackEntityAsMob(entitylivingbase);
+                }
+
+                this.blizz.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
+            }
+            else if (d0 < 256.0D)
+            {
+
+                if (this.attackTime <= 0)
+                {
+                    ++this.firingState;
+
+                    if (this.firingState == 1)
+                    {
+                        this.attackTime = 60;
+                        this.blizz.setInAttackMode(true);
+                    }
+                    else if (this.firingState <= 4)
+                    {
+                        this.attackTime = 6;
+                    }
+                    else
+                    {
+                        this.attackTime = 80;
+                        this.firingState = 0;
+                        this.blizz.setInAttackMode(false);
+                    }
+
+                    if (this.firingState > 1)
+                    {
+                        this.blizz.playSound(SOUND_ATTACK, 2.0F, (this.blizz.rand.nextFloat() - this.blizz.rand.nextFloat()) * 0.2F + 1.0F);
+                        for (int i = 0; i < 1; ++i)
+                        {
+                        	EntityBlizzBolt bolt = new EntityBlizzBolt(this.blizz.worldObj, this.blizz);
+                            bolt.posY = this.blizz.posY + (double)(this.blizz.height / 2.0F) + 0.5D;
+                            this.blizz.worldObj.spawnEntityInWorld(bolt);
+                        }
+                    }
+                }
+                this.blizz.getLookHelper().setLookPositionWithEntity(entitylivingbase, 10.0F, 10.0F);
+            }
+            else
+            {
+                this.blizz.getNavigator().clearPathEntity();
+                this.blizz.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
+            }
+            super.updateTask();
+        }
+    }
+	
 }

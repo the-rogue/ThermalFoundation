@@ -1,10 +1,12 @@
 package cofh.core.fluid;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -88,21 +90,24 @@ public class TileFont extends TileCoFHBase implements ISidedTexture {
 		}
 		timeTracker = worldTime + productionDelay;
 
-		int x = xCoord, y = yCoord, z = zCoord, meta = worldObj.getBlockMetadata(x, y, z);
-		EnumFacing dir = EnumFacing.getOrientation(meta ^ 1);
+		BlockPos pos = this.getPos();
+		IBlockState state = worldObj.getBlockState(pos);
 
-		if (fluidBlock.canDisplace(worldObj, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ)) {
-			worldObj.setBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, fluidBlock, 0, 3);
-			worldObj.notifyBlockChange(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, getBlockType());
-
-			if (amount > 0) {
-				amount--;
-			}
-			if (amount == 0) {
-				// if (worldObj.rand) TODO: depleted font state
-				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta | 8, 2);
-			}
+		for (EnumFacing f : EnumFacing.values()) {
+				if (fluidBlock.canDisplace(worldObj, new BlockPos(pos).offset(f))) {
+					worldObj.setBlockState(new BlockPos(pos).offset(f), fluidBlock.getDefaultState(), 3);
+					worldObj.notifyBlockOfStateChange(new BlockPos(pos).offset(f), getBlockType());
+					
+					if (amount > 0) {
+						amount--;
+					}
+					if (amount == 0) {
+						// if (worldObj.rand) TODO: depleted font state
+						worldObj.notifyNeighborsOfStateChange(pos, state.getBlock());
+					}
+				}
 		}
+
 	}
 
 	/* NBT METHODS */

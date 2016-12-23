@@ -8,11 +8,11 @@ import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderArrow;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
@@ -77,12 +77,19 @@ public class ProxyClient extends Proxy {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void preInit() {
 
 		Minecraft.memoryReserve = null;
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityCoFHArrow.class, new RenderArrow());
+		RenderingRegistry.registerEntityRenderingHandler(EntityCoFHArrow.class, new RenderArrow<EntityCoFHArrow>(Minecraft.getMinecraft().getRenderManager()){
+			@Override
+			protected ResourceLocation getEntityTexture(EntityCoFHArrow entity)
+			{
+				return new ResourceLocation("textures/entity/arrow.png");
+			}
+		});
 
 		/* GLOBAL */
 		String category = "Global";
@@ -249,38 +256,33 @@ public class ProxyClient extends Proxy {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void registerIcons(TextureStitchEvent.Pre event) {
-
-		if (event.getMap().getTextureType() == 0) {
-
-		} else if (event.getMap().getTextureType() == 1) {
-			IconRegistry.addIcon("IconAccessFriends", "cofh:icons/Icon_Access_Friends", event.getMap());
-			IconRegistry.addIcon("IconAccessGuild", "cofh:icons/Icon_Access_Guild", event.getMap());
-			IconRegistry.addIcon("IconAccessPrivate", "cofh:icons/Icon_Access_Private", event.getMap());
-			IconRegistry.addIcon("IconAccessPublic", "cofh:icons/Icon_Access_Public", event.getMap());
-			IconRegistry.addIcon("IconAccept", "cofh:icons/Icon_Accept", event.getMap());
-			IconRegistry.addIcon("IconAcceptInactive", "cofh:icons/Icon_Accept_Inactive", event.getMap());
-			IconRegistry.addIcon("IconAugment", "cofh:icons/Icon_Augment", event.getMap());
-			IconRegistry.addIcon("IconButton", "cofh:icons/Icon_Button", event.map);
-			IconRegistry.addIcon("IconButtonHighlight", "cofh:icons/Icon_Button_Highlight", event.map);
-			IconRegistry.addIcon("IconButtonInactive", "cofh:icons/Icon_Button_Inactive", event.map);
-			IconRegistry.addIcon("IconCancel", "cofh:icons/Icon_Cancel", event.map);
-			IconRegistry.addIcon("IconCancelInactive", "cofh:icons/Icon_Cancel_Inactive", event.map);
-			IconRegistry.addIcon("IconConfig", "cofh:icons/Icon_Config", event.map);
-			IconRegistry.addIcon("IconEnergy", "cofh:icons/Icon_Energy", event.map);
-			IconRegistry.addIcon("IconNope", "cofh:icons/Icon_Nope", event.map);
-			IconRegistry.addIcon("IconInformation", "cofh:icons/Icon_Information", event.map);
-			IconRegistry.addIcon("IconTutorial", "cofh:icons/Icon_Tutorial", event.map);
-
-			IconRegistry.addIcon("IconGunpowder", Items.gunpowder.getIconFromDamage(0));
-			IconRegistry.addIcon("IconRedstone", Items.redstone.getIconFromDamage(0));
-			IconRegistry.addIcon("IconRSTorchOff", "cofh:icons/Icon_RSTorchOff", event.map);
-			IconRegistry.addIcon("IconRSTorchOn", "cofh:icons/Icon_RSTorchOn", event.map);
-
-			IconRegistry.addIcon("IconArrowDown0", "cofh:icons/Icon_ArrowDown_Inactive", event.map);
-			IconRegistry.addIcon("IconArrowDown1", "cofh:icons/Icon_ArrowDown", event.map);
-			IconRegistry.addIcon("IconArrowUp0", "cofh:icons/Icon_ArrowUp_Inactive", event.map);
-			IconRegistry.addIcon("IconArrowUp1", "cofh:icons/Icon_ArrowUp", event.map);
-		}
+		TextureMap map = event.getMap();
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Access_Friends"));		//"IconAccessFriends"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Access_Guild"));		//"IconAccessGuild"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Access_Private"));		//"IconAccessPrivate"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Access_Public"));		//"IconAccessPublic"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Accept"));				//"IconAccept"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Accept_Inactive"));	//"IconAcceptInactive"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Augment"));			//"IconAugment"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Button"));				//"IconButton"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Button_Highlight"));	//"IconButtonHighlight"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Button_Inactive"));	//"IconButtonInactive"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Cancel"));				//"IconCancel"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Cancel_Inactive"));	//"IconCancelInactive"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Config"));				//"IconConfig"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Energy"));				//"IconEnergy"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Nope"));				//"IconNope"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Information"));		//"IconInformation"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_Tutorial"));			//"IconTutorial"
+		map.registerSprite(new ResourceLocation("minecraft:items/gunpowder"));			//"IconGunpowder"
+		map.registerSprite(new ResourceLocation("minecraft:items/redstone_dust"));		//"IconRedstone"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_RSTorchOff"));			//"IconRSTorchOff"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_RSTorchOn"));			//"IconRSTorchOn"
+		
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_ArrowDown_Inactive"));	//"IconArrowDown0"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_ArrowDown"));			//"IconArrowDown1"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_ArrowUp_Inactive"));	//"IconArrowUp0"
+		map.registerSprite(new ResourceLocation("cofh:icons/Icon_ArrowUp"));			//"IconArrowUp1"
 	}
 
 	@SubscribeEvent

@@ -175,15 +175,17 @@ public class CoreUtils {
 	}
 
 	/* SOUND UTILS */
-	public static final String getSoundName(String modId, String soundpath) {
-
-		soundpath = soundpath.replaceAll("/", ".");
-		return String.format("%s:%s", modId, soundpath);
-	}
 
 	public static final float getSoundVolume(int category) {
 
 		return CoFHCore.proxy.getSoundVolume(category);
+	}
+	public static final SoundEvent createSound(String modid, String soundpath) {
+		soundpath = soundpath.replaceAll("/", ".");
+		ResourceLocation location = new ResourceLocation(modid, soundpath);
+		SoundEvent event = new SoundEvent(location);
+		SoundEvent.REGISTRY.register(-1, location, event);
+		return event;
 	}
 
 	/* ENTITY UTILS */
