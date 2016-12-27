@@ -18,7 +18,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidInteractive;
 import cofh.core.util.CoreUtils;
 import cofh.lib.util.BlockWrapper;
@@ -48,7 +47,7 @@ public class BlockFluidMana extends BlockFluidInteractive {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.register(this, new ResourceLocation("FluidMana"));
+		super.preInit();
 
 		addInteraction(Blocks.DIRT.getDefaultState(), Blocks.GRASS.getDefaultState());
 		addInteraction(Blocks.DIRT, 1, 1, Blocks.DIRT, 2);

@@ -11,10 +11,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Level;
 
@@ -48,7 +46,7 @@ public class BlockFluidAerotheum extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.register(this, new ResourceLocation("FluidAerotheum"));
+		super.preInit();
 
 		String category = "Fluid.Aerotheum";
 		String comment = "Enable this for Fluid Aerotheum to do...things.";

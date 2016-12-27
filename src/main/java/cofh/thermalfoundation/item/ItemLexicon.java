@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import cofh.api.core.IInitializer;
 import cofh.api.item.IEmpowerableItem;
 import cofh.api.item.IInventoryContainerItem;
 import cofh.core.util.CoreUtils;
@@ -34,7 +35,7 @@ import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.gui.GuiHandler;
 import cofh.thermalfoundation.util.LexiconManager;
 
-public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpowerableItem, IBauble {
+public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpowerableItem, IBauble, IInitializer {
 
 	public String modName = "thermalfoundation";
 	public final String itemName;
@@ -43,7 +44,8 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 
 		super();
 		this.itemName = name;
-		setUnlocalizedName(name);
+		setUnlocalizedName(modName + ":" + name);
+		setRegistryName(name);
 		setMaxDamage(1);
 		setMaxStackSize(1);
 		setCreativeTab(ThermalFoundation.tabCommon);
@@ -149,14 +151,6 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 		return null;
 	}
 
-	@Override
-	public Item setUnlocalizedName(String name) {
-		name = modName + "." + name;
-		super.setUnlocalizedName(name);
-		GameRegistry.register(this);
-		return this;
-	}
-
 	/* IInventoryContainerItem */
 	@Override
 	public int getSizeInventory(ItemStack container) {
@@ -167,7 +161,7 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 	/* IEmpowerableItem */
 	@Override
 	public boolean isEmpowered(ItemStack stack) {
-
+		
 		return stack.getTagCompound() == null ? false : stack.getTagCompound().getBoolean("Empowered");
 	}
 
@@ -183,7 +177,7 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 
 	@Override
 	public void onStateChange(EntityPlayer player, ItemStack stack) {
-
+		
 		if (isEmpowered(stack)) {
 			player.worldObj.playSound(player, player.getPosition(), SoundEvent.REGISTRY.getObject(new ResourceLocation("weather.rain.above")), SoundCategory.PLAYERS, 0.4F, 1.0F);
 		} else {
@@ -229,8 +223,23 @@ public class ItemLexicon extends Item implements IInventoryContainerItem, IEmpow
 
 		return true;
 	}
-	public void registertexture() {
+	
+	@Override
+	public boolean preInit()
+	{
+		GameRegistry.register(this);
+		return true;
+	}
+	
+	@Override
+	public boolean initialize() {
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(this, 0, new ModelResourceLocation(this.getUnlocalizedName().substring(5), "inventory"));
+		return true;
 	}
 
+	@Override
+	public boolean postInit()
+	{
+		return true;
+	}
 }

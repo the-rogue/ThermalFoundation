@@ -39,6 +39,7 @@ public class BlockOre extends Block implements IInitializer {
 		setSoundType(SoundType.STONE);
 		setCreativeTab(ThermalFoundation.tabCommon);
 		setUnlocalizedName("thermalfoundation:ore");
+		setRegistryName("ore");
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.Copper));
 
 		setHarvestLevel("pickaxe", 2);
@@ -86,11 +87,11 @@ public class BlockOre extends Block implements IInitializer {
 		return getMetaFromState(state);
 	}
 	
+	@Override
     @Nullable
     public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
-        //TODO
-    	return null;
+    	return Item.getItemFromBlock(state.getBlock());
     }
 	
 	@Override
@@ -103,8 +104,8 @@ public class BlockOre extends Block implements IInitializer {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.register(this, new ResourceLocation("Ore"));
-		GameRegistry.register(new ItemBlockOre(this), new ResourceLocation("Ore"));
+		GameRegistry.register(this);
+		GameRegistry.register(new ItemBlockOre(this).setRegistryName(this.getRegistryName()));
 		
 		ModelBakery.registerItemVariants(Item.getItemFromBlock(this), 
 				new ResourceLocation("thermalfoundation:orecopper"), 

@@ -1,5 +1,12 @@
 package cofh.thermalfoundation.gui.client;
 
+import java.util.Locale;
+
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.input.Keyboard;
+
 import cofh.core.gui.GuiBaseAdv;
 import cofh.core.gui.element.TabInfo;
 import cofh.lib.gui.GuiColor;
@@ -13,13 +20,6 @@ import cofh.lib.util.helpers.StringHelper;
 import cofh.thermalfoundation.gui.container.ContainerLexiconStudy;
 import cofh.thermalfoundation.network.PacketTFBase;
 import cofh.thermalfoundation.util.LexiconManager;
-
-import java.util.Locale;
-
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.input.Keyboard;
 
 public class GuiLexiconStudy extends GuiBaseAdv {
 
@@ -273,6 +273,12 @@ public class GuiLexiconStudy extends GuiBaseAdv {
 		for (String oreName : LexiconManager.getSortedOreNames()) {
 			oreList.add(new ListBoxElementText(oreName));
 		}
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+	{
+		
 	}
 
 }

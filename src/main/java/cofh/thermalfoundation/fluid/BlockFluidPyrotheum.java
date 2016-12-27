@@ -18,7 +18,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidInteractive;
 import cofh.lib.util.BlockWrapper;
 import cofh.lib.util.helpers.BlockHelper;
@@ -49,7 +48,7 @@ public class BlockFluidPyrotheum extends BlockFluidInteractive {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.register(this, new ResourceLocation("FluidPyrotheum"));
+		super.preInit();
 
 		addInteraction(Blocks.COBBLESTONE.getDefaultState(), Blocks.STONE.getDefaultState());
 		addInteraction(Blocks.GRASS.getDefaultState(), Blocks.DIRT.getDefaultState());

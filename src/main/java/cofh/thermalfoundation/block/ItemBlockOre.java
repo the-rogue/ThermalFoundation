@@ -1,9 +1,13 @@
 package cofh.thermalfoundation.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,7 +34,14 @@ public class ItemBlockOre extends ItemBlock {
 
 		return super.getUnlocalizedName(item) + BlockOre.EnumType.getTypeFromMeta(item.getItemDamage()).getName();
 	}
-
+	
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
+		for(BlockOre.EnumType oretype : BlockOre.EnumType.values()) {
+			subItems.add(new ItemStack(item, 1, oretype.getMeta()));
+		}
+	}
+	
 	@Override
 	public int getMetadata(int damage) {
 

@@ -11,10 +11,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Level;
 
@@ -46,7 +44,7 @@ public class BlockFluidGlowstone extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.register(this, new ResourceLocation("FluidGlowstone"));
+		super.preInit();
 
 		String category = "Fluid.Glowstone";
 		String comment = "Enable this for Fluid Glowstone to do...something.";
