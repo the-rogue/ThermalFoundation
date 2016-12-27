@@ -11,10 +11,11 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -34,7 +35,6 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.core.CoFHProps;
-import cofh.core.entity.ai.EntityAINearestPlayerOrOther;
 import cofh.core.util.CoreUtils;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.lib.util.helpers.MathHelper;
@@ -138,7 +138,8 @@ public class EntityBlizz extends EntityMob {
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
-        this.targetTasks.addTask(2, new EntityAINearestPlayerOrOther<EntityBlaze>(this, EntityBlaze.class, true));
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, true));
+        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityVillager>(this, EntityVillager.class, true));
     }
 
 	@Override
@@ -370,7 +371,8 @@ public class EntityBlizz extends EntityMob {
                         for (int i = 0; i < 1; ++i)
                         {
                         	EntityBlizzBolt bolt = new EntityBlizzBolt(this.blizz.worldObj, this.blizz);
-                            bolt.posY = this.blizz.posY + (double)(this.blizz.height / 2.0F) + 0.5D;
+                            //bolt.posY = this.blizz.posY + (double)(this.blizz.height / 2.0F) + 0.5D;
+                            bolt.setHeadingFromThrower(this.blizz, this.blizz.rotationPitch, this.blizz.rotationYaw, 0.0F, 0.95F, 0.0F);
                             this.blizz.worldObj.spawnEntityInWorld(bolt);
                         }
                     }

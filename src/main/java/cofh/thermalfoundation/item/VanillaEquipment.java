@@ -24,11 +24,11 @@ public enum VanillaEquipment {
     Wood(ToolMaterial.WOOD, "plankWood") {
 
     	@Override
-    	protected void createTools() {
+    	protected void createTools(String TOOL) {
 
-    		itemShears = new ItemShearsAdv(TOOL_MATERIAL);
+    		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Shears");
     		itemFishingRod = Items.FISHING_ROD;
-    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL);
+    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Bow");
     		itemBow = Items.BOW;
     	}
     },
@@ -36,12 +36,12 @@ public enum VanillaEquipment {
     Iron {
 
     	@Override
-    	protected void createTools() {
+    	protected void createTools(String TOOL) {
 
     		itemShears =  Items.SHEARS;
-    		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL);
-    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL);
-    		itemBow = new ItemBowAdv(TOOL_MATERIAL);
+    		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "FishingRod");
+    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Sickle");
+    		itemBow = new ItemBowAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Bow");
     	}
     },
     Diamond(ToolMaterial.DIAMOND, "gemDiamond"),
@@ -88,19 +88,19 @@ public enum VanillaEquipment {
 		arrowDamage = 1.0F + TOOL_MATERIAL.getDamageVsEntity() / 8F;
 	}
 
-	protected void createTools() {
+	protected void createTools(String TOOL) {
 
-		itemShears = new ItemShearsAdv(TOOL_MATERIAL);
-		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL);
-		itemSickle = new ItemSickleAdv(TOOL_MATERIAL);
-		itemBow = new ItemBowAdv(TOOL_MATERIAL);
+		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Shears");
+		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "FishingRod");
+		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Sickle");
+		itemBow = new ItemBowAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Bow");
 	}
 
 	protected void preInitv() {
 
 		final String NAME = name();
 		final String TYPE = NAME.toLowerCase(Locale.US);
-		final String TOOL = "thermalfoundation.tool." + TYPE;
+		final String TOOL = "tool" + TYPE;
 
 		String category = "Equipment." + NAME;
 
@@ -120,27 +120,27 @@ public enum VanillaEquipment {
 			enableTools[i] &= !TFProps.disableAllTools;
 		}
 
-		createTools();
+		createTools(TOOL);
 
 		if (itemShears instanceof ItemShearsAdv) {
 			ItemShearsAdv itemShears = (ItemShearsAdv) this.itemShears;
-			itemShears.setRepairIngot(ingot).setShowInCreative(enableTools[0] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Shears");
-			GameRegistry.register(itemShears);
+			itemShears.setRepairIngot(ingot).setShowInCreative(enableTools[0] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
+			itemShears.preInit();
 		}
 
 		if (itemFishingRod instanceof ItemFishingRodAdv) {
 			ItemFishingRodAdv itemFishingRod = (ItemFishingRodAdv) this.itemFishingRod;
-			itemFishingRod.setRepairIngot(ingot).setShowInCreative(enableTools[1] | TFProps.showDisabledEquipment).setLuckModifier(luckModifier).setSpeedModifier(speedModifier).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "FishingRod");
-			GameRegistry.register(itemFishingRod);
+			itemFishingRod.setRepairIngot(ingot).setShowInCreative(enableTools[1] | TFProps.showDisabledEquipment).setLuckModifier(luckModifier).setSpeedModifier(speedModifier).setCreativeTab(ThermalFoundation.tabTools);
+			itemFishingRod.preInit();
 		}
 
-		itemSickle.setRepairIngot(ingot).setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Sickle");
-		GameRegistry.register(itemSickle);
+		itemSickle.setRepairIngot(ingot).setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
+		itemSickle.preInit();
 
 		if (itemBow instanceof ItemBowAdv) {
 			ItemBowAdv itemBow = (ItemBowAdv) this.itemBow;
-			itemBow.setRepairIngot(ingot).setShowInCreative(enableTools[3] | TFProps.showDisabledEquipment).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setCreativeTab(ThermalFoundation.tabTools).setUnlocalizedName(TOOL + "Bow");
-			GameRegistry.register(itemBow);
+			itemBow.setRepairIngot(ingot).setShowInCreative(enableTools[3] | TFProps.showDisabledEquipment).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setCreativeTab(ThermalFoundation.tabTools);
+			itemBow.preInit();
 		}
 	}
 
@@ -150,10 +150,37 @@ public enum VanillaEquipment {
 		toolFishingRod = new ItemStack(itemFishingRod);
 		toolSickle = new ItemStack(itemSickle);
 		toolBow = new ItemStack(itemBow);
+		
+		if (itemShears instanceof ItemShearsAdv) {
+			ItemShearsAdv itemShears = (ItemShearsAdv) this.itemShears;
+			itemShears.initialize();
+		}
+		if (itemFishingRod instanceof ItemFishingRodAdv) {
+			ItemFishingRodAdv itemFishingRod = (ItemFishingRodAdv) this.itemFishingRod;
+			itemFishingRod.initialize();
+		}
+		itemSickle.initialize();
+		if (itemBow instanceof ItemBowAdv) {
+			ItemBowAdv itemBow = (ItemBowAdv) this.itemBow;
+			itemBow.initialize();
+		}
 	}
 
 	protected void postInitv() {
 
+		if (itemShears instanceof ItemShearsAdv) {
+			ItemShearsAdv itemShears = (ItemShearsAdv) this.itemShears;
+			itemShears.postInit();
+		}
+		if (itemFishingRod instanceof ItemFishingRodAdv) {
+			ItemFishingRodAdv itemFishingRod = (ItemFishingRodAdv) this.itemFishingRod;
+			itemFishingRod.postInit();
+		}
+		itemSickle.postInit();
+		if (itemBow instanceof ItemBowAdv) {
+			ItemBowAdv itemBow = (ItemBowAdv) this.itemBow;
+			itemBow.postInit();
+		}
 		// Tools
 		if (enableTools[0]) {
 			GameRegistry.addRecipe(ShapedRecipe(toolShears, new Object[] { " I", "I ", 'I', ingot }));

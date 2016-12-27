@@ -3,8 +3,6 @@ package cofh.thermalfoundation.fluid;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidCoFHBase;
 
 public class BlockFluidSteam extends BlockFluidCoFHBase {
@@ -27,9 +25,7 @@ public class BlockFluidSteam extends BlockFluidCoFHBase {
 
 	@Override
 	public boolean preInit() {
-
-		GameRegistry.register(this, new ResourceLocation("FluidSteam"));
-
+		super.preInit();
 		return true;
 	}
 

@@ -118,4 +118,10 @@ public class GuiLexiconTransmute extends GuiBaseAdv {
 		super.drawGuiContainerForegroundLayer(x, y);
 	}
 
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+	{
+		
+	}
+
 }
