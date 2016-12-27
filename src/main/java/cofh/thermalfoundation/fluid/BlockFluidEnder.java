@@ -5,8 +5,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidCoFHBase;
 import cofh.core.util.CoreUtils;
 import cofh.thermalfoundation.ThermalFoundation;
@@ -32,7 +34,7 @@ public class BlockFluidEnder extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		super.preInit();
+		GameRegistry.register(this, new ResourceLocation("FluidEnder"));
 
 		String category = "Fluid.Ender";
 		String comment = "Enable this for Fluid Ender to randomly teleport entities on contact.";

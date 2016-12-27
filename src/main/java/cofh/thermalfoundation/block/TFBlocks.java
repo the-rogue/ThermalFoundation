@@ -1,8 +1,5 @@
 package cofh.thermalfoundation.block;
 
-import java.util.ArrayList;
-
-import cofh.api.core.IInitializer;
 import cofh.core.fluid.BlockFluidCoFHBase;
 import cofh.thermalfoundation.fluid.BlockFluidAerotheum;
 import cofh.thermalfoundation.fluid.BlockFluidCoal;
@@ -17,39 +14,45 @@ import cofh.thermalfoundation.fluid.BlockFluidSteam;
 
 public class TFBlocks {
 
-	private static final ArrayList<IInitializer> BLOCKS = new ArrayList<IInitializer>();
-	
 	public static void preInit() {
 
-		BLOCKS.add(blockOre = new BlockOre());
-		BLOCKS.add(blockStorage = new BlockStorage());
+		blockOre = new BlockOre();
+		blockStorage = new BlockStorage();
 
-		BLOCKS.add(blockFluidRedstone = new BlockFluidRedstone());
-		BLOCKS.add(blockFluidGlowstone = new BlockFluidGlowstone());
-		BLOCKS.add(blockFluidEnder = new BlockFluidEnder());
-		BLOCKS.add(blockFluidPyrotheum = new BlockFluidPyrotheum());
-		BLOCKS.add(blockFluidCryotheum = new BlockFluidCryotheum());
-		BLOCKS.add(blockFluidAerotheum = new BlockFluidAerotheum());
-		BLOCKS.add(blockFluidPetrotheum = new BlockFluidPetrotheum());
-		BLOCKS.add(blockFluidMana = new BlockFluidMana());
-		BLOCKS.add(blockFluidSteam = new BlockFluidSteam());
-		BLOCKS.add(blockFluidCoal = new BlockFluidCoal());
-		
-		for (IInitializer i : BLOCKS) {
-			i.preInit();
-		}
+		blockFluidRedstone = new BlockFluidRedstone();
+		blockFluidGlowstone = new BlockFluidGlowstone();
+		blockFluidEnder = new BlockFluidEnder();
+		blockFluidPyrotheum = new BlockFluidPyrotheum();
+		blockFluidCryotheum = new BlockFluidCryotheum();
+		blockFluidAerotheum = new BlockFluidAerotheum();
+		blockFluidPetrotheum = new BlockFluidPetrotheum();
+		blockFluidMana = new BlockFluidMana();
+		blockFluidSteam = new BlockFluidSteam();
+		blockFluidCoal = new BlockFluidCoal();
+
+		blockOre.preInit();
+		blockStorage.preInit();
+
+		blockFluidRedstone.preInit();
+		blockFluidGlowstone.preInit();
+		blockFluidEnder.preInit();
+		blockFluidPyrotheum.preInit();
+		blockFluidCryotheum.preInit();
+		blockFluidAerotheum.preInit();
+		blockFluidPetrotheum.preInit();
+		blockFluidMana.preInit();
+		blockFluidSteam.preInit();
+		blockFluidCoal.preInit();
 	}
 
 	public static void initialize() {
-		for (IInitializer i : BLOCKS) {
-			i.initialize();
-		}
+
 	}
 
 	public static void postInit() {
-		for (IInitializer i : BLOCKS) {
-			i.postInit();
-		}
+
+		blockOre.postInit();
+		blockStorage.postInit();
 	}
 
 	public static BlockOre blockOre;

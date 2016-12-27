@@ -17,6 +17,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidInteractive;
 import cofh.lib.util.BlockWrapper;
 import cofh.lib.util.helpers.BlockHelper;
@@ -48,7 +49,7 @@ public class BlockFluidPetrotheum extends BlockFluidInteractive {
 	@Override
 	public boolean preInit() {
 
-		super.preInit();
+		GameRegistry.register(this, new ResourceLocation("FluidPetrotheum"));
 
 		addInteraction(Blocks.STONE.getDefaultState(), Blocks.GRAVEL.getDefaultState());
 		addInteraction(Blocks.COBBLESTONE.getDefaultState(), Blocks.GRAVEL.getDefaultState());

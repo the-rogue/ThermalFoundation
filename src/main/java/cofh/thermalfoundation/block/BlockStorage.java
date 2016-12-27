@@ -39,7 +39,6 @@ public class BlockStorage extends Block implements IInitializer {
 		setSoundType(SoundType.METAL);
 		setCreativeTab(ThermalFoundation.tabCommon);
 		setUnlocalizedName("thermalfoundation:block");
-		setRegistryName("storage");
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.Copper));
 
 		setHarvestLevel("pickaxe", 2);
@@ -138,8 +137,8 @@ public class BlockStorage extends Block implements IInitializer {
 	@Override
 	public boolean preInit() {
 
-		GameRegistry.register(this);
-		GameRegistry.register(new ItemBlockStorage(this).setRegistryName(this.getRegistryName()));
+		GameRegistry.register(this, new ResourceLocation("Storage"));
+		GameRegistry.register(new ItemBlockStorage(this), new ResourceLocation("Storage"));
 		ModelBakery.registerItemVariants(Item.getItemFromBlock(this), 
 				new ResourceLocation("thermalfoundation:blockcopper"), 
 				new ResourceLocation("thermalfoundation:blocktin"),

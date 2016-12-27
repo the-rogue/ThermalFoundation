@@ -46,7 +46,7 @@ public class EE3Plugin {
 	@Strippable("mod:EE3")
 	public static void loadComplete() {
 
-		ThermalFoundation.log.info("Equivalent Exchange 3 Plugin Enabled.");
+		ThermalFoundation.log.info("Thermal Foundation: Equivalent Exchange 3 Plugin Enabled.");
 	}
 
 }

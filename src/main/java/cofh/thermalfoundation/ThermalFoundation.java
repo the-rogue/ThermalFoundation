@@ -46,7 +46,7 @@ import cofh.thermalfoundation.util.LexiconManager;
 		guiFactory = ThermalFoundation.modGuiFactory, canBeDeactivated = false, customProperties = @CustomProperty(k = "cofhversion", v = "true"))
 public class ThermalFoundation extends BaseMod {
 
-	public static final String modId = "thermalfoundation";
+	public static final String modId = "ThermalFoundation";
 	public static final String modName = "Thermal Foundation";
 	public static final String version = "1.7.10R1.2.6B1";
 	public static final String version_max = "1.7.10R1.3.0";
@@ -93,11 +93,9 @@ public class ThermalFoundation extends BaseMod {
 		cleanConfig(true);
 		configOptions();
 
-		//MUST be in this order otherwise null pointer exceptions are thrown when doing stuff with fluids!
 		TFFluids.preInit();
-		TFBlocks.preInit();
 		TFItems.preInit();
-		
+		TFBlocks.preInit();
 		TFPlugins.preInit();
 
 		LexiconManager.preInit();

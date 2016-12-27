@@ -20,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidInteractive;
 import cofh.lib.util.BlockWrapper;
 import cofh.lib.util.helpers.BlockHelper;
@@ -53,7 +54,7 @@ public class BlockFluidCryotheum extends BlockFluidInteractive {
 	@Override
 	public boolean preInit() {
 
-		super.preInit();
+		GameRegistry.register(this, new ResourceLocation("FluidCryotheum"));
 
 		addInteraction(Blocks.GRASS.getDefaultState(), Blocks.DIRT.getDefaultState());
 		addInteraction(Blocks.WATER.getDefaultState(), Blocks.ICE.getDefaultState());

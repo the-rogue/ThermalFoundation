@@ -11,7 +11,6 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityMob;
@@ -33,6 +32,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.core.CoFHProps;
+import cofh.core.entity.ai.EntityAINearestPlayerOrOther;
 import cofh.core.util.CoreUtils;
 import cofh.lib.util.helpers.ItemHelper;
 import cofh.lib.util.helpers.MathHelper;
@@ -136,8 +136,7 @@ public class EntityBlitz extends EntityMob {
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, true));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityVillager>(this, EntityVillager.class, true));
+        this.targetTasks.addTask(2, new EntityAINearestPlayerOrOther<EntityVillager>(this, EntityVillager.class, true));
     }
 
 	@Override
@@ -369,8 +368,7 @@ public class EntityBlitz extends EntityMob {
                         for (int i = 0; i < 1; ++i)
                         {
                         	EntityBlitzBolt bolt = new EntityBlitzBolt(this.blitz.worldObj, this.blitz);
-                            //bolt.posY = this.blitz.posY + (double)(this.blitz.height / 2.0F) + 0.5D;
-                            bolt.setHeadingFromThrower(this.blitz, this.blitz.rotationPitch, this.blitz.rotationYaw, 0.0F, 0.95F, 0.0F);
+                            bolt.posY = this.blitz.posY + (double)(this.blitz.height / 2.0F) + 0.5D;
                             this.blitz.worldObj.spawnEntityInWorld(bolt);
                         }
                     }

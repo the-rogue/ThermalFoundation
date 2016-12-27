@@ -6,9 +6,11 @@ import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import cofh.core.fluid.BlockFluidCoFHBase;
 import cofh.thermalfoundation.ThermalFoundation;
 
@@ -33,7 +35,8 @@ public class BlockFluidRedstone extends BlockFluidCoFHBase {
 	@Override
 	public boolean preInit() {
 
-		super.preInit();
+		GameRegistry.register(this, new ResourceLocation("FluidRedstone"));
+
 		String category = "Fluid.Redstone";
 		String comment = "Enable this for Fluid Redstone to emit a signal proportional to its fluid level.";
 		effect = ThermalFoundation.config.get(category, "Effect", true, comment);
