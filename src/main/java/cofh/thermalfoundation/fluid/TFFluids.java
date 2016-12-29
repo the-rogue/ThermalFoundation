@@ -9,38 +9,37 @@ public class TFFluids {
 
 	public static void preInit() {
 
-		String fluidlocations = "thermalfoundation:textures/blocks/fluid/Fluid_";
-		fluidRedstone = new Fluid("redstone", new ResourceLocation(fluidlocations + "Redstone_Still.png"), new ResourceLocation(fluidlocations + "Redstone_Flow.png"))
+		String fluidlocations = "thermalfoundation:blocks/fluid/Fluid_";
+		fluidRedstone = new Fluid("redstone", new ResourceLocation(fluidlocations + "Redstone_Still"), new ResourceLocation(fluidlocations + "Redstone_Flow"))
 			.setLuminosity(7).setDensity(1200).setViscosity(1500).setTemperature(300).setRarity(EnumRarity.UNCOMMON);
-		fluidGlowstone = new Fluid("glowstone", new ResourceLocation(fluidlocations + "Glowstone_Still.png"), new ResourceLocation(fluidlocations + "Glowstone_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidRedstone);
+		fluidGlowstone = new Fluid("glowstone", new ResourceLocation(fluidlocations + "Glowstone_Still"), new ResourceLocation(fluidlocations + "Glowstone_Flow"))
 			.setLuminosity(15).setDensity(-500).setViscosity(100).setTemperature(300).setGaseous(true).setRarity(EnumRarity.UNCOMMON);
-		fluidEnder = new Fluid("ender", new ResourceLocation(fluidlocations + "Ender_Still.png"), new ResourceLocation(fluidlocations + "Ender_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidGlowstone);
+		fluidEnder = new Fluid("ender", new ResourceLocation(fluidlocations + "Ender_Still"), new ResourceLocation(fluidlocations + "Ender_Flow"))
 			.setLuminosity(3).setDensity(4000).setViscosity(3000).setTemperature(300).setRarity(EnumRarity.UNCOMMON);
-		fluidPyrotheum = new Fluid("pyrotheum", new ResourceLocation(fluidlocations + "Pyrotheum_Still.png"), new ResourceLocation(fluidlocations + "Pyrotheum_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidEnder);
+		fluidPyrotheum = new Fluid("pyrotheum", new ResourceLocation(fluidlocations + "Pyrotheum_Still"), new ResourceLocation(fluidlocations + "Pyrotheum_Flow"))
 			.setLuminosity(15).setDensity(2000).setViscosity(1200).setTemperature(4000).setRarity(EnumRarity.RARE);
-		fluidCryotheum = new Fluid("cryotheum", new ResourceLocation(fluidlocations + "Cryotheum_Still.png"), new ResourceLocation(fluidlocations + "Cryotheum_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidPyrotheum);
+		fluidCryotheum = new Fluid("cryotheum", new ResourceLocation(fluidlocations + "Cryotheum_Still"), new ResourceLocation(fluidlocations + "Cryotheum_Flow"))
 			.setLuminosity(0).setDensity(4000).setViscosity(3000).setTemperature(50).setRarity(EnumRarity.RARE);
-		fluidAerotheum = new Fluid("aerotheum", new ResourceLocation(fluidlocations + "Aerotheum_Still.png"), new ResourceLocation(fluidlocations + "Aerotheum_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidCryotheum);
+		fluidAerotheum = new Fluid("aerotheum", new ResourceLocation(fluidlocations + "Aerotheum_Still"), new ResourceLocation(fluidlocations + "Aerotheum_Flow"))
 			.setLuminosity(0).setDensity(-800).setViscosity(100).setTemperature(300).setGaseous(true).setRarity(EnumRarity.RARE);
-		fluidPetrotheum = new Fluid("petrotheum", new ResourceLocation(fluidlocations + "Petrotheum_Still.png"), new ResourceLocation(fluidlocations + "Petrotheum_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidAerotheum);
+		fluidPetrotheum = new Fluid("petrotheum", new ResourceLocation(fluidlocations + "Petrotheum_Still"), new ResourceLocation(fluidlocations + "Petrotheum_Flow"))
 			.setLuminosity(0).setDensity(4000).setViscosity(1500).setTemperature(400).setRarity(EnumRarity.RARE);
-		fluidMana = new Fluid("mana", new ResourceLocation(fluidlocations + "Mana_Still.png"), new ResourceLocation(fluidlocations + "Mana_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidPetrotheum);
+		fluidMana = new Fluid("mana", new ResourceLocation(fluidlocations + "Mana_Still"), new ResourceLocation(fluidlocations + "Mana_Flow"))
 			.setLuminosity(15).setDensity(600).setViscosity(6000).setTemperature(350).setRarity(EnumRarity.EPIC);
-		fluidSteam = new Fluid("steam", new ResourceLocation(fluidlocations + "Steam_Still.png"), new ResourceLocation(fluidlocations + "Steam_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidMana);
+		fluidSteam = new Fluid("steam", new ResourceLocation(fluidlocations + "Steam_Still"), new ResourceLocation(fluidlocations + "Steam_Flow"))
 			.setLuminosity(0).setDensity(-1000).setViscosity(200).setTemperature(750).setGaseous(true);
-		fluidCoal = new Fluid("coal", new ResourceLocation(fluidlocations + "Coal_Still.png"), new ResourceLocation(fluidlocations + "Coal_Flow.png"))
+		FluidRegistry.addBucketForFluid(fluidSteam);
+		fluidCoal = new Fluid("coal", new ResourceLocation(fluidlocations + "Coal_Still"), new ResourceLocation(fluidlocations + "Coal_Flow"))
 			.setLuminosity(0).setDensity(900).setViscosity(2000).setTemperature(300);
-
-		registerFluid(fluidRedstone, "redstone");
-		registerFluid(fluidGlowstone, "glowstone");
-		registerFluid(fluidEnder, "ender");
-		registerFluid(fluidPyrotheum, "pyrotheum");
-		registerFluid(fluidCryotheum, "cryotheum");
-		registerFluid(fluidAerotheum, "aerotheum");
-		registerFluid(fluidPetrotheum, "petrotheum");
-		registerFluid(fluidMana, "mana");
-		registerFluid(fluidSteam, "steam");
-		registerFluid(fluidCoal, "coal");
+		FluidRegistry.addBucketForFluid(fluidCoal);
 	}
 
 	public static void initialize() {

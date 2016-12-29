@@ -1,9 +1,6 @@
 package cofh.thermalfoundation.item;
 
 import static cofh.lib.util.helpers.ItemHelper.ShapedRecipe;
-
-import java.util.Locale;
-
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -44,22 +41,22 @@ public enum Equipment {
 
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD, "thermalfoundation", ARMOR + "Helmet");
+			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD, "thermalfoundation", ARMOR + ".Helmet");
 			itemHelmet.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemHelmet.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST, "thermalfoundation", ARMOR + "Plate");
+			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST, "thermalfoundation", ARMOR + ".Plate");
 			itemPlate.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemPlate.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS, "thermalfoundation", ARMOR + "Legs");
+			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS, "thermalfoundation", ARMOR + ".Legs");
 			itemLegs.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemLegs.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("lead weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("lead weight bonus", -.15, 2);
-			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET, "thermalfoundation", ARMOR + "Boots");
+			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET, "thermalfoundation", ARMOR + ".Boots");
 			itemBoots.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemBoots.putAttribute("generic.movementSpeed", movementBonus);
 		}
@@ -78,22 +75,22 @@ public enum Equipment {
 
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .20, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD, "thermalfoundation", ARMOR + "Helmet");
+			itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD, "thermalfoundation", ARMOR + ".Helmet");
 			itemHelmet.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemHelmet.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST, "thermalfoundation", ARMOR + "Plate");
+			itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST, "thermalfoundation", ARMOR + ".Plate");
 			itemPlate.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemPlate.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .25, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS, "thermalfoundation", ARMOR + "Legs");
+			itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS, "thermalfoundation", ARMOR + ".Legs");
 			itemLegs.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemLegs.putAttribute("generic.movementSpeed", movementBonus);
 			knockbackBonus = new AttributeModifier("platinum weight bonus", .20, 0);
 			movementBonus = new AttributeModifier("platinum weight bonus", -.08, 2);
-			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET, "thermalfoundation", ARMOR + "Boots");
+			itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET, "thermalfoundation", ARMOR + ".Boots");
 			itemBoots.putAttribute("generic.knockbackResistance", knockbackBonus);
 			itemBoots.putAttribute("generic.movementSpeed", movementBonus);
 		}
@@ -145,8 +142,8 @@ public enum Equipment {
 
 	private Equipment(int level, int uses, float speed, float damage, int enchant, int durability, int[] absorb, float toughness) {
 
-		TOOL_MATERIAL = EnumHelper.addToolMaterial("TF:" + name().toUpperCase(Locale.US), level, uses, speed, damage, enchant);
-		ARMOR_MATERIAL = EnumHelper.addArmorMaterial("TF:" + name().toUpperCase(Locale.US),"TF:" + name().toUpperCase(Locale.US), durability, absorb, enchant, SoundEvent.REGISTRY.getObject(new ResourceLocation("item.armor.equip_generic")), toughness);
+		TOOL_MATERIAL = EnumHelper.addToolMaterial("thermalfoundation:" + name(), level, uses, speed, damage, enchant);
+		ARMOR_MATERIAL = EnumHelper.addArmorMaterial("thermalfoundation:" + name(),"thermalfoundation:" + name(), durability, absorb, enchant, SoundEvent.REGISTRY.getObject(new ResourceLocation("item.armor.equip_generic")), toughness);
 		ingot = "ingot" + name();
 
 		/* Fishing Rod */
@@ -160,30 +157,30 @@ public enum Equipment {
 
 	protected void createArmor(String ARMOR) {
 
-		itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD, "thermalfoundation", ARMOR + "Helmet");
-		itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST, "thermalfoundation", ARMOR + "Plate");
-		itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS, "thermalfoundation", ARMOR + "Legs");
-		itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET, "thermalfoundation", ARMOR + "Boots");
+		itemHelmet = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.HEAD, "thermalfoundation", ARMOR + ".Helmet");
+		itemPlate = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.CHEST, "thermalfoundation", ARMOR + ".Plate");
+		itemLegs = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.LEGS, "thermalfoundation", ARMOR + ".Legs");
+		itemBoots = new ItemArmorAdv(ARMOR_MATERIAL, EntityEquipmentSlot.FEET, "thermalfoundation", ARMOR + ".Boots");
 	}
 
 	protected void createTools(String TOOL) {
 
-		itemSword = new ItemSwordAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Sword");
-		itemShovel = new ItemShovelAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Shovel");
-		itemPickaxe = new ItemPickaxeAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Pickaxe");
-		itemAxe = new ItemAxeAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Axe");
-		itemHoe = new ItemHoeAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Hoe");
-		itemShears = new ItemShearsAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Shears");
-		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "FishingRod");
-		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Sickle");
-		itemBow = new ItemBowAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + "Bow");
+		itemSword = new ItemSwordAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Sword");
+		itemShovel = new ItemShovelAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Shovel");
+		itemPickaxe = new ItemPickaxeAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Pickaxe");
+		itemAxe = new ItemAxeAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Axe");
+		itemHoe = new ItemHoeAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Hoe");
+		itemShears = new ItemShearsAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Shears");
+		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".FishingRod");
+		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Sickle");
+		itemBow = new ItemBowAdv(TOOL_MATERIAL, ThermalFoundation.modId, TOOL + ".Bow");
 	}
 
 	protected void preInitv() {
 
 		final String NAME = name();
-		final String ARMOR = "armor" + NAME;
-		final String TOOL = "tool" + NAME;
+		final String ARMOR = "armor." + NAME;
+		final String TOOL = "tool." + NAME;
 
 		String category = "Equipment." + NAME;
 		enableArmor = ThermalFoundation.config.get(category, "Armor", true);

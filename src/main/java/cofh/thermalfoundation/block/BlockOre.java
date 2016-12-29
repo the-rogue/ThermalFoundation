@@ -12,7 +12,9 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -140,6 +142,9 @@ public class BlockOre extends Block implements IInitializer {
 	@Override
 	public boolean initialize() {
 
+		for (EnumType e : EnumType.values()) {
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(this), e.getMeta(), new ModelResourceLocation("thermalfoundation:ore" + e.getName(), "inventory"));
+		}
 		return true;
 	}
 

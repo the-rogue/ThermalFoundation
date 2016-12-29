@@ -1,0 +1,14 @@
+{
+    "parent": "item/handheld_rod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/tin/TinFishingRod_Uncast"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "cast": 1
+            },
+            "model": { "parent": "thermalfoundation:item/tool/tin/TinFishingRod", "textures": { "layer0": "thermalfoundation:items/tool/tin/TinFishingRod_Cast" } }
+        }
+    ]
+}

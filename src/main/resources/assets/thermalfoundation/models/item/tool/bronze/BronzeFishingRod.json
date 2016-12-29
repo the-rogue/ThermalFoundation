@@ -1,0 +1,14 @@
+{
+    "parent": "item/handheld_rod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/bronze/BronzeFishingRod_Uncast"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "cast": 1
+            },
+            "model": { "parent": "thermalfoundation:item/tool/bronze/BronzeFishingRod", "textures": { "layer0": "thermalfoundation:items/tool/bronze/BronzeFishingRod_Cast" } }
+        }
+    ]
+}

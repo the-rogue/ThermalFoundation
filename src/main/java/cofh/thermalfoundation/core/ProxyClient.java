@@ -47,9 +47,9 @@ public class ProxyClient extends Proxy {
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void registerIcons(TextureStitchEvent.Pre event) {
-			if (TFProps.iconBlazePowder) {
-				Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Items.BLAZE_POWDER, 0, new ModelResourceLocation("thermalfoundation:DustBlaze", "inventory"));
-			}
+		if (TFProps.iconBlazePowder) {
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Items.BLAZE_POWDER, 0, new ModelResourceLocation("thermalfoundation:material/dustBlaze", "inventory"));
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -1,0 +1,14 @@
+{
+    "parent": "item/handheld_rod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/nickel/NickelFishingRod_Uncast"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "cast": 1
+            },
+            "model": { "parent": "thermalfoundation:item/tool/nickel/NickelFishingRod", "textures": { "layer0": "thermalfoundation:items/tool/nickel/NickelFishingRod_Cast" } }
+        }
+    ]
+}

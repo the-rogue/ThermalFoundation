@@ -1,0 +1,17 @@
+{
+	"variants": {
+		"variant=copper": { "model":"thermalfoundation:blockcopper" },
+		"variant=tin": { "model":"thermalfoundation:blocktin" },
+		"variant=silver": { "model":"thermalfoundation:blocksilver" },
+		"variant=lead": { "model":"thermalfoundation:blocklead" },
+		"variant=nickel": { "model":"thermalfoundation:blocknickel" },
+		"variant=platinum": { "model":"thermalfoundation:blockplatinum" },
+		"variant=mithril": { "model":"thermalfoundation:blockmithril" },
+		"variant=electrum": { "model":"thermalfoundation:blockelectrum" },
+		"variant=invar": { "model":"thermalfoundation:blockinvar" },
+		"variant=bronze": { "model":"thermalfoundation:blockbronze" },
+		"variant=signalum": { "model":"thermalfoundation:blocksignalum" },
+		"variant=lumium": { "model":"thermalfoundation:blocklumium" },
+		"variant=enderium": { "model":"thermalfoundation:blockenderium" }
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"variants": {
+		"variant=copper": { "model":"thermalfoundation:orecopper" },
+		"variant=tin": { "model":"thermalfoundation:oretin" },
+		"variant=silver": { "model":"thermalfoundation:oresilver" },
+		"variant=lead": { "model":"thermalfoundation:orelead" },
+		"variant=nickel": { "model":"thermalfoundation:orenickel" },
+		"variant=platinum": { "model":"thermalfoundation:oreplatinum" },
+		"variant=mithril": { "model":"thermalfoundation:oremithril" }
+	}
+}

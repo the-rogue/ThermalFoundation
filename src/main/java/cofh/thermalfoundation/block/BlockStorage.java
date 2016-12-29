@@ -9,7 +9,9 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,7 +41,7 @@ public class BlockStorage extends Block implements IInitializer {
 		setSoundType(SoundType.METAL);
 		setCreativeTab(ThermalFoundation.tabCommon);
 		setUnlocalizedName("thermalfoundation:block");
-		setRegistryName("storage");
+		setRegistryName("block");
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.Copper));
 
 		setHarvestLevel("pickaxe", 2);
@@ -190,6 +192,9 @@ public class BlockStorage extends Block implements IInitializer {
 	@Override
 	public boolean initialize() {
 
+		for (EnumType e : EnumType.values()) {
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(this), e.getMeta(), new ModelResourceLocation("thermalfoundation:block" + e.getName(), "inventory"));
+		}
 		return true;
 	}
 

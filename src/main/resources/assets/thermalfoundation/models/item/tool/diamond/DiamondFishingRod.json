@@ -1,0 +1,14 @@
+{
+    "parent": "item/handheld_rod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/diamond/DiamondFishingRod_Uncast"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "cast": 1
+            },
+            "model": { "parent": "thermalfoundation:item/tool/diamond/DiamondFishingRod", "textures": { "layer0": "thermalfoundation:items/tool/diamond/DiamondFishingRod_Cast" } }
+        }
+    ]
+}

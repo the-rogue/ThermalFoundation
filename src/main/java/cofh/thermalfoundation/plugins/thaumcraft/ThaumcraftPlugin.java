@@ -1,7 +1,6 @@
 package cofh.thermalfoundation.plugins.thaumcraft;
 
 import static cofh.api.modhelpers.ThaumcraftHelper.parseAspects;
-
 import cofh.asm.relauncher.Strippable;
 import cofh.thermalfoundation.ThermalFoundation;
 import cofh.thermalfoundation.block.BlockOre;

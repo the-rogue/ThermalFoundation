@@ -6,6 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.CustomProperty;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -73,6 +74,9 @@ public class ThermalFoundation extends BaseMod {
 
 	public static File worldGenOres;
 	public static final String worldGenInternalOres = "assets/thermalfoundation/world/ThermalFoundation-Ores.json";
+	static {
+		FluidRegistry.enableUniversalBucket();
+	}
 
 	/* INIT SEQUENCE */
 	public ThermalFoundation() {

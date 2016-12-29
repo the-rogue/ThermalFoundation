@@ -26,9 +26,9 @@ public enum VanillaEquipment {
     	@Override
     	protected void createTools(String TOOL) {
 
-    		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Shears");
+    		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Shears");
     		itemFishingRod = Items.FISHING_ROD;
-    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Bow");
+    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Bow");
     		itemBow = Items.BOW;
     	}
     },
@@ -39,9 +39,9 @@ public enum VanillaEquipment {
     	protected void createTools(String TOOL) {
 
     		itemShears =  Items.SHEARS;
-    		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "FishingRod");
-    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Sickle");
-    		itemBow = new ItemBowAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Bow");
+    		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".FishingRod");
+    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Sickle");
+    		itemBow = new ItemBowAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Bow");
     	}
     },
     Diamond(ToolMaterial.DIAMOND, "gemDiamond"),
@@ -90,17 +90,16 @@ public enum VanillaEquipment {
 
 	protected void createTools(String TOOL) {
 
-		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Shears");
-		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "FishingRod");
-		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Sickle");
-		itemBow = new ItemBowAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + "Bow");
+		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Shears");
+		itemFishingRod = new ItemFishingRodAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".FishingRod");
+		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Sickle");
+		itemBow = new ItemBowAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Bow");
 	}
 
 	protected void preInitv() {
 
 		final String NAME = name();
-		final String TYPE = NAME.toLowerCase(Locale.US);
-		final String TOOL = "tool" + TYPE;
+		final String TOOL = "tool." + NAME;
 
 		String category = "Equipment." + NAME;
 

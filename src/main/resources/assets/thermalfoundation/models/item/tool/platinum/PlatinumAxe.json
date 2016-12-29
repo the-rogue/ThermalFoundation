@@ -1,0 +1,6 @@
+{
+	"parent": "thermalfoundation:item/_standard_item",
+	"textures": { 
+		"layer0": "thermalfoundation:items/tool/platinum/PlatinumAxe"
+	}
+}

@@ -37,7 +37,6 @@ public class BlockFluidRedstone extends BlockFluidCoFHBase {
 		String category = "Fluid.Redstone";
 		String comment = "Enable this for Fluid Redstone to emit a signal proportional to its fluid level.";
 		effect = ThermalFoundation.config.get(category, "Effect", true, comment);
-
 		return true;
 	}
 
@@ -63,5 +62,4 @@ public class BlockFluidRedstone extends BlockFluidCoFHBase {
 
 		return TFFluids.fluidRedstone.getLuminosity();
 	}
-
 }
