@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/nickel/NickelFishingRod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/nickel/NickelFishingRod_Cast"
+    }
+}

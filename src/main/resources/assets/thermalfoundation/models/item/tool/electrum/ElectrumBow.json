@@ -1,5 +1,5 @@
 {
-    "parent": "thermalfoundation:item/_standard_item",
+    "parent": "thermalfoundation:item/_standard_tool",
     "textures": {
         "layer0": "thermalfoundation:items/tool/electrum/ElectrumBow"
     },
@@ -28,7 +28,7 @@
     "overrides": [
         {
             "predicate": {
-                "pulling": 1
+               "pulling": 1
             },
             "model": "thermalfoundation:item/tool/electrum/ElectrumBow_pulling_0"
         },

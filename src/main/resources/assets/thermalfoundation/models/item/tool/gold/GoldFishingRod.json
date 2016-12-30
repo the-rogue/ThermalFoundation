@@ -1,5 +1,5 @@
 {
-    "parent": "item/handheld_rod",
+    "parent": "thermalfoundation:item/_standard_fishing_rod",
     "textures": {
         "layer0": "thermalfoundation:items/tool/gold/GoldFishingRod_Uncast"
     },
@@ -8,7 +8,7 @@
             "predicate": {
                 "cast": 1
             },
-            "model": { "parent": "thermalfoundation:item/tool/gold/GoldFishingRod", "textures": { "layer0": "thermalfoundation:items/tool/gold/GoldFishingRod_Cast" } }
+            "model": "thermalfoundation:item/tool/gold/GoldFishingRod_cast"
         }
     ]
 }

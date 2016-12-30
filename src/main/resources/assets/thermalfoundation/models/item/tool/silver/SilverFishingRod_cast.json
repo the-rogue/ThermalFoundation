@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/silver/SilverFishingRod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/silver/SilverFishingRod_Cast"
+    }
+}

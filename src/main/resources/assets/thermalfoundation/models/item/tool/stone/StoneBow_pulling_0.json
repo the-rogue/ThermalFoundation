@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/stone/StoneBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/stone/StoneBow_0"
+    }
+}

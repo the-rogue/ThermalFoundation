@@ -28,12 +28,12 @@ public enum VanillaEquipment {
 
     		itemShears = new ItemShearsAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Shears");
     		itemFishingRod = Items.FISHING_ROD;
-    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Bow");
+    		itemSickle = new ItemSickleAdv(TOOL_MATERIAL, "thermalfoundation", TOOL + ".Sickle");
     		itemBow = Items.BOW;
     	}
     },
     Stone(ToolMaterial.STONE, "cobblestone"),
-    Iron {
+    Iron (ToolMaterial.IRON, "ingotIron") {
 
     	@Override
     	protected void createTools(String TOOL) {
@@ -45,7 +45,7 @@ public enum VanillaEquipment {
     	}
     },
     Diamond(ToolMaterial.DIAMOND, "gemDiamond"),
-    Gold
+    Gold (ToolMaterial.GOLD, "ingotGold")
 	;
 	// @formatter:on
 
@@ -68,11 +68,6 @@ public enum VanillaEquipment {
 	public ItemStack toolFishingRod;
 	public ItemStack toolSickle;
 	public ItemStack toolBow;
-
-	private VanillaEquipment() {
-
-		this(null, null);
-	}
 
 	private VanillaEquipment(ToolMaterial material, String ingot) {
 
@@ -133,7 +128,11 @@ public enum VanillaEquipment {
 			itemFishingRod.preInit();
 		}
 
-		itemSickle.setRepairIngot(ingot).setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
+		int harvestlvl = TOOL_MATERIAL.getHarvestLevel();
+		if (name() == "Stone" || name() == "Iron") {
+			--harvestlvl;
+		}
+		itemSickle.setRadius((int)Math.pow(harvestlvl, 2.0) + 1).setRepairIngot(ingot).setShowInCreative(enableTools[2] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
 		itemSickle.preInit();
 
 		if (itemBow instanceof ItemBowAdv) {

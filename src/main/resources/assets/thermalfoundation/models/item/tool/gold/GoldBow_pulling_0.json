@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/gold/GoldBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/gold/GoldBow_0"
+    }
+}

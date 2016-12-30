@@ -1,6 +1,6 @@
-	echo {
-	echo     "parent": "thermalfoundation:item/tool/electrum/ElectrumBow",
-	echo     "textures": {
-	echo         "layer0": "thermalfoundation:items/tool/electrum/ElectrumBow_0"
-	echo     }
-	echo }
+{
+    "parent": "thermalfoundation:item/tool/electrum/ElectrumBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/electrum/ElectrumBow_0"
+    }
+}

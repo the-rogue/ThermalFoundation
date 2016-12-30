@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/copper/CopperBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/copper/CopperBow_0"
+    }
+}

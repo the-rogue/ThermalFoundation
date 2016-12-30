@@ -1,5 +1,5 @@
 {
-    "parent": "thermalfoundation:item/_standard_item",
+    "parent": "thermalfoundation:item/_standard_tool",
     "textures": {
         "layer0": "thermalfoundation:items/tool/diamond/DiamondBow"
     },
@@ -28,23 +28,23 @@
     "overrides": [
         {
             "predicate": {
-                "pulling": 1
+               "pulling": 1
             },
-            "model": { "parent": "thermalfoundation:item/tool/diamond/DiamondBow", "textures": { "layer0": "thermalfoundation:items/tool/diamond/DiamondBow_0" } }
+            "model": "thermalfoundation:item/tool/diamond/DiamondBow_pulling_0"
         },
         {
             "predicate": {
                 "pulling": 1,
                "pull": 0.65
             },
-           "model": { "parent": "thermalfoundation:item/tool/diamond/DiamondBow", "textures": { "layer0": "thermalfoundation:items/tool/diamond/DiamondBow_1" } }
+            "model": "thermalfoundation:item/tool/diamond/DiamondBow_pulling_0"
         },
         {
             "predicate": {
                 "pulling": 1,
                 "pull": 0.9
             },
-            "model": { "parent": "thermalfoundation:item/tool/diamond/DiamondBow", "textures": { "layer0": "thermalfoundation:items/tool/diamond/DiamondBow_2" } }
+            "model": "thermalfoundation:item/tool/diamond/DiamondBow_pulling_0"
         }
     ]
 }

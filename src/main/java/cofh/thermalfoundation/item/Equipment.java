@@ -220,7 +220,7 @@ public enum Equipment {
 		itemHoe.setRepairIngot(ingot).setShowInCreative(enableTools[4] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
 		itemShears.setRepairIngot(ingot).setShowInCreative(enableTools[5] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
 		itemFishingRod.setRepairIngot(ingot).setShowInCreative(enableTools[6] | TFProps.showDisabledEquipment).setLuckModifier(luckModifier).setSpeedModifier(speedModifier).setCreativeTab(ThermalFoundation.tabTools);
-		itemSickle.setRepairIngot(ingot).setShowInCreative(enableTools[7] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
+		itemSickle.setRadius((int)Math.pow(TOOL_MATERIAL.getHarvestLevel(), 2.0) + 1).setRepairIngot(ingot).setShowInCreative(enableTools[7] | TFProps.showDisabledEquipment).setCreativeTab(ThermalFoundation.tabTools);
 
 		itemBow.setRepairIngot(ingot).setShowInCreative(enableTools[8] | TFProps.showDisabledEquipment).setArrowSpeed(arrowSpeed).setArrowDamage(arrowDamage).setCreativeTab(ThermalFoundation.tabTools);
 		

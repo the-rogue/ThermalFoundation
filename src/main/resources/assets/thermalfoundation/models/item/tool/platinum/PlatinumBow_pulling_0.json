@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/platinum/PlatinumBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/platinum/PlatinumBow_0"
+    }
+}

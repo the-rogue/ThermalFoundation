@@ -1,5 +1,5 @@
 {
-    "parent": "thermalfoundation:item/_standard_item",
+    "parent": "thermalfoundation:item/_standard_tool",
     "textures": {
         "layer0": "thermalfoundation:items/tool/platinum/PlatinumBow"
     },
@@ -28,23 +28,23 @@
     "overrides": [
         {
             "predicate": {
-                "pulling": 1
+               "pulling": 1
             },
-            "model": { "parent": "thermalfoundation:item/tool/platinum/PlatinumBow", "textures": { "layer0": "thermalfoundation:items/tool/platinum/PlatinumBow_0" } }
+            "model": "thermalfoundation:item/tool/platinum/PlatinumBow_pulling_0"
         },
         {
             "predicate": {
                 "pulling": 1,
                "pull": 0.65
             },
-           "model": { "parent": "thermalfoundation:item/tool/platinum/PlatinumBow", "textures": { "layer0": "thermalfoundation:items/tool/platinum/PlatinumBow_1" } }
+            "model": "thermalfoundation:item/tool/platinum/PlatinumBow_pulling_0"
         },
         {
             "predicate": {
                 "pulling": 1,
                 "pull": 0.9
             },
-            "model": { "parent": "thermalfoundation:item/tool/platinum/PlatinumBow", "textures": { "layer0": "thermalfoundation:items/tool/platinum/PlatinumBow_2" } }
+            "model": "thermalfoundation:item/tool/platinum/PlatinumBow_pulling_0"
         }
     ]
 }

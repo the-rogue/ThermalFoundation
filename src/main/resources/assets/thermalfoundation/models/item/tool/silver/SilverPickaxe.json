@@ -1,5 +1,5 @@
 {
-	"parent": "thermalfoundation:item/_standard_item",
+	"parent": "thermalfoundation:item/_standard_tool",
 	"textures": { 
 		"layer0": "thermalfoundation:items/tool/silver/SilverPickaxe"
 	}

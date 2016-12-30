@@ -1,5 +1,5 @@
 {
-    "parent": "thermalfoundation:item/_standard_item",
+    "parent": "thermalfoundation:item/_standard_tool",
     "textures": {
         "layer0": "thermalfoundation:items/tool/gold/GoldBow"
     },
@@ -28,23 +28,23 @@
     "overrides": [
         {
             "predicate": {
-                "pulling": 1
+               "pulling": 1
             },
-            "model": { "parent": "thermalfoundation:item/tool/gold/GoldBow", "textures": { "layer0": "thermalfoundation:items/tool/gold/GoldBow_0" } }
+            "model": "thermalfoundation:item/tool/gold/GoldBow_pulling_0"
         },
         {
             "predicate": {
                 "pulling": 1,
                "pull": 0.65
             },
-           "model": { "parent": "thermalfoundation:item/tool/gold/GoldBow", "textures": { "layer0": "thermalfoundation:items/tool/gold/GoldBow_1" } }
+            "model": "thermalfoundation:item/tool/gold/GoldBow_pulling_0"
         },
         {
             "predicate": {
                 "pulling": 1,
                 "pull": 0.9
             },
-            "model": { "parent": "thermalfoundation:item/tool/gold/GoldBow", "textures": { "layer0": "thermalfoundation:items/tool/gold/GoldBow_2" } }
+            "model": "thermalfoundation:item/tool/gold/GoldBow_pulling_0"
         }
     ]
 }

@@ -140,9 +140,8 @@ public class GuiLexiconStudy extends GuiBaseAdv {
 
 	public GuiLexiconStudy(InventoryPlayer inventory, ContainerLexiconStudy container) {
 
-		super(container);
+		super(container, TEXTURE);
 		lexicon = container;
-		texture = TEXTURE;
 		name = "gui.thermalfoundation.lexicon.study";
 		allowUserInput = false;
 
@@ -278,7 +277,7 @@ public class GuiLexiconStudy extends GuiBaseAdv {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		
+		super.func_146976_a(partialTicks, mouseX, mouseY);
 	}
 
 }

@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/nickel/NickelBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/nickel/NickelBow_0"
+    }
+}

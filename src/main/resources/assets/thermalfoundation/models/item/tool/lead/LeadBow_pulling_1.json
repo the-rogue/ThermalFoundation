@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/lead/LeadBow",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/lead/LeadBow_1"
+    }
+}

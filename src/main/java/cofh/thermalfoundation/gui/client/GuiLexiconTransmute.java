@@ -7,7 +7,6 @@ import cofh.lib.gui.element.ElementButton;
 import cofh.lib.util.helpers.StringHelper;
 import cofh.thermalfoundation.gui.container.ContainerLexiconTransmute;
 import cofh.thermalfoundation.network.PacketTFBase;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,9 +27,8 @@ public class GuiLexiconTransmute extends GuiBaseAdv {
 
 	public GuiLexiconTransmute(InventoryPlayer inventory, ContainerLexiconTransmute container) {
 
-		super(container);
+		super(container, TEXTURE);
 		lexicon = container;
-		texture = TEXTURE;
 		name = "gui.thermalfoundation.lexicon.transmute";
 		allowUserInput = false;
 
@@ -121,7 +119,7 @@ public class GuiLexiconTransmute extends GuiBaseAdv {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
 	{
-		
+		super.func_146976_a(partialTicks, mouseX, mouseY);
 	}
 
 }

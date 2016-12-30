@@ -1,0 +1,6 @@
+{
+    "parent": "thermalfoundation:item/tool/tin/TinFishingRod",
+    "textures": {
+        "layer0": "thermalfoundation:items/tool/tin/TinFishingRod_Cast"
+    }
+}
