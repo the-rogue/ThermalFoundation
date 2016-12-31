@@ -49,8 +49,8 @@ public class ThermalFoundation extends BaseMod {
 
 	public static final String modId = "thermalfoundation";
 	public static final String modName = "Thermal Foundation";
-	public static final String version = "1.7.10R2.0.1B1";
-	public static final String version_max = "1.7.10R2.1.0";
+	public static final String version = "1.10.2R2.0.1B1";
+	public static final String version_max = "1.10.2R2.1.0";
 	public static final String dependencies = CoFHCore.version_group;
 	public static final String modGuiFactory = "cofh.thermalfoundation.gui.GuiConfigTFFactory";
 
